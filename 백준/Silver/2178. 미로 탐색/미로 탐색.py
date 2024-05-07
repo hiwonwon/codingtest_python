@@ -1,32 +1,32 @@
 import sys
 from collections import deque
 
-n,m =map(int,sys.stdin.readline().split())
+input = sys.stdin.readline
 
-miro = []
-visited = [[0]*m for i in range(n)]
+n, m = map(int, input().split())
+graph = []
 
-for i in range(n):
-    miro.append(list(map(int,sys.stdin.readline().rstrip())))
+for _ in range(n):
+    graph.append(list(map(int, input().rstrip()))) # readline의 경우 맨 뒤에 '\n'까지 입력받으므로 제거해줘야 함
 
 dx = [-1,1,0,0]
 dy = [0,0,-1,1]
 
-def bfs(x,y):
-    
-    q = deque()
-    q.append((x,y))
 
-    while q:
-        x,y = q.popleft()
+def bfs(x,y):
+    queue = deque()
+    queue.append((x,y))
+
+    while queue:
+        x,y = queue.popleft()
 
         for i in range(4):
             nx = x + dx[i]
             ny = y + dy[i]
-            #x와 y가 범위내에 있고 이동할 수 있는 칸이며 아직 방문 안한곳일때
-            if 0<=nx<n and 0<=ny<m and miro[nx][ny]==1 :
-                q.append((nx,ny))
-                miro[nx][ny] = miro[x][y]+1
-    return miro[n-1][m-1]
+
+            if 0<=nx<n and 0<= ny < m and graph[nx][ny] == 1 :
+                queue.append((nx,ny))
+                graph[nx][ny] = graph[x][y]+1
+    return graph[n-1][m-1]
 
 print(bfs(0,0))
