@@ -1,37 +1,63 @@
- #include <cstdio>
+#include <iostream>
 #include <queue>
 #include <algorithm>
+#include <cmath>
 
-struct cmp{
-    bool operator()(int& a, int& b){
-        if(std::abs(a)==std::abs(b)){
-            return a>b;
+using namespace std;
+
+struct cmp
+{
+    bool operator()(int a, int b)
+    {
+        if (abs(a) > abs(b))
+        {
+            return true;
         }
-        return abs(a)>abs(b);
+        else if (abs(a) == abs(b))
+        {
+            if (a > b)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
     }
 };
 
-int main(int argc, char * argv[]){
-    std::priority_queue<int, std::vector<int>, cmp> q;
+priority_queue<int, vector<int>, cmp> myheap;
 
-    int n;
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-    int x;
-    int i;
+    int N;
+    cin >> N;
 
-    scanf("%d", &n);
-
-    for(i=0; i<n; i++){
-        scanf("%d", &x);
-        if(x) q.push(x);
-        else{
-            if(q.size()){
-                printf("%d\n", q.top());
-                q.pop();
-            }else{
-                printf("0\n");
+    while (N--)
+    {
+        int num;
+        cin >> num;
+        if (num == 0)
+        {
+            if (myheap.empty())
+            {
+                cout << '0' << '\n';
+            }
+            else
+            {
+                int temp = myheap.top();
+                cout << temp << '\n';
+                myheap.pop();
             }
         }
+        else
+        {
+            myheap.push(num);
+        }
     }
-    return 0;
 }
