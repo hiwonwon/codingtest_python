@@ -1,63 +1,42 @@
 #include <iostream>
 #include <queue>
-#include <algorithm>
-#include <cmath>
-
 using namespace std;
 
-struct cmp
-{
-    bool operator()(int a, int b)
-    {
-        if (abs(a) > abs(b))
-        {
-            return true;
-        }
-        else if (abs(a) == abs(b))
-        {
-            if (a > b)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        return false;
-    }
-};
-
-priority_queue<int, vector<int>, cmp> myheap;
-
-int main()
-{
-    ios_base::sync_with_stdio(false);
+int main() {
+    ios::sync_with_stdio(false);
     cin.tie(NULL);
-
+    
     int N;
+    priority_queue<int, vector<int>, greater<int> > positive;
+    priority_queue<int> negative;    
+    
     cin >> N;
-
-    while (N--)
-    {
-        int num;
-        cin >> num;
-        if (num == 0)
-        {
-            if (myheap.empty())
-            {
-                cout << '0' << '\n';
+    
+    for(int i = 0; i < N; i++) {
+        int t;
+        cin >> t;
+        if(!t && positive.empty() && negative.empty()) {
+            cout << 0 << '\n';
+        } else if(!t && !positive.empty() && negative.empty()) {
+            cout << positive.top() << '\n';
+            positive.pop();
+        } else if(!t && positive.empty() && !negative.empty()) {
+            cout << negative.top() << '\n';
+            negative.pop();
+        } else if(!t && !positive.empty() && !negative.empty()){
+            if(abs(positive.top()) < abs(negative.top())) {
+                cout << positive.top() << '\n';
+                positive.pop();
+            } else {
+                cout << negative.top() << '\n';
+                negative.pop();
             }
-            else
-            {
-                int temp = myheap.top();
-                cout << temp << '\n';
-                myheap.pop();
-            }
+            
+        } else if(t > 0){
+            positive.push(t);
+        } else if(t < 0) {
+            negative.push(t);
         }
-        else
-        {
-            myheap.push(num);
-        }
-    }
+    } // for i
+    return 0;
 }
