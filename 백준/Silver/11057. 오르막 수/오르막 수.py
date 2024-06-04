@@ -1,11 +1,12 @@
-n = int(input())
-ans = [1]*10
-for i in range(1,n):
-    for j in range(1,10):
-        ans[j] += ans[j-1]
+N = int(input())
 
+def comb(N):
+    base = 1
+    base2 = 1
+    for i in range(1,10):
+        base *= (N+i)
+        base2 *= i
+    return base//base2
+print(comb(N)%10007)
 
-
-
-
-print(sum(ans)%10007)
+   
