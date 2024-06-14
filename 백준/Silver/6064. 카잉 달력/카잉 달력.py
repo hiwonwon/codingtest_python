@@ -1,15 +1,18 @@
 import sys
-T = int(input())
 
-def find_K(M, N, x, y):
-    K = x
+input = sys.stdin.readline
 
-    while K <= M * N:
-        if (K - x) % M == 0 and (K - y) % N == 0:
-            return K
-        K += M
-    return -1
+t = int(input())
+for _ in range(t):
+    M, N, x, y = map(int, input().split())
 
-for _ in range(T):
-    M, N, x, y = map(int, sys.stdin.readline().rstrip().split())
-    print(find_K(M, N, x, y))
+    k = x
+    while k <= M * N:
+        # print(k)
+        if (k - y) % N == 0:
+            break
+        k += M
+    if k > M * N:
+        k = -1
+    print(k)
+    # print("-----")
