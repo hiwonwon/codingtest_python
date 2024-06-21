@@ -1,34 +1,52 @@
-# 1389. 케빈 베이컨의 6단계 법칙 (2024.6.10) | S1
-from collections import deque
+import sys
 
-N, M = map(int, input().split())
-graph = [[] for _ in range(N + 1)]
+#input functions
+readint = lambda: int(sys.stdin.readline())
+readints = lambda: map(int,sys.stdin.readline().split())
+readar = lambda: list(map(int,sys.stdin.readline().split()))
+flush = lambda: sys.stdout.flush()
+readin = lambda: sys.stdin.readline()[:-1]
 
-for _ in range(M):
-  a, b = map(int, input().split())
-  graph[a].append(b)
-  graph[b].append(a)
-  
-  
-def bfs(start):
-  num = [0] * (N + 1)
-  visited = [start]
-  queue = deque()
-  queue.append(start)
-  
-  while queue:
-    a = queue.popleft();
-    for g in graph[a]:
-      if g not in visited:
-        num[g] = num[a] + 1
-        visited.append(g)
-        queue.append(g)
-        
-  return sum(num)
+# smallest sum of distances from a "center"
 
-result = []
-    
-for i in range(1, N+1):
-  result.append(bfs(i))
-  
-print(result.index(min(result)) + 1)
+
+class Node:
+    def __init__(self):
+        self.val = -1
+        self.edges = list()
+
+def f(nodes,x):
+    nodes[x].val = 0
+    q = [x]
+    while len(q) != 0:
+        nq = list()
+        for i in q:
+            for j in nodes[i].edges:
+                if nodes[j].val == -1:
+                    nq.append(j)
+                    nodes[j].val = nodes[i].val+1
+        q = nq
+    ans = 0
+    for ii in range(1,len(nodes)):
+        ans += nodes[ii].val
+        nodes[ii].val = -1
+    return ans
+
+n,m = readints()
+nodes = [0]
+for _ in range(n):
+    nodes.append(Node())
+for _ in range(m):
+    a,b = readints()
+    nodes[a].edges.append(b)
+    nodes[b].edges.append(a)
+
+best = 999999999999
+ans = -1
+for i in range(1,n+1):
+    k = f(nodes,i)
+    #print(k,i)
+    if k < best:
+        best = k
+        ans = i
+print(ans)
