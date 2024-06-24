@@ -1,49 +1,38 @@
 import sys
-sys.setrecursionlimit(10**6)
+input = sys.stdin.readline
 
-def DFS(x,y):
-    global cnt
-    for i in range(4):
-        nx = x + dx[i]
-        ny = y + dy[i]
-        if 0<=nx<m and 0<=ny<n and visited[nx][ny] == 0 and maps[nx][ny] == 0:
-            visited[nx][ny] = 1
-            cnt +=1
-            DFS(nx,ny)
+m,n,k = map(int,input().split())
+a = [[0]*n for _ in range(m)]
+for _ in range(k):
+ x1,y1,x2,y2 = map(int,input().split())
+ for i in range(y1,y2):
+  a[i][x1:x2]=[-1]*(x2-x1)
 
-if __name__ == "__main__":
+dy,dx=[1,-1,0,0],[0,0,1,-1]
 
+def dfs(i,j,k):
+ if a[i][j]: return
+ a[i][j] = k
+ stack = [(i,j)]
+ cnt = 1
+ while stack:
+  y,x = stack.pop()
+  for i in range(4):
+   ny,nx = y+dy[i],x+dx[i]
+   if 0<=ny<m and 0<=nx<n and not a[ny][nx]:
+    a[ny][nx] = k
+    cnt += 1
+    stack += [(ny,nx)]
+ return cnt
 
-    count = 0
-    cnt = 0
-    result = []
+k = 1
+ans = []
+for i in range(m):
+ for j in range(n):
+  c = dfs(i,j,k)
+  if c:
+   ans += [c]
+   k += 1
 
-    input = sys.stdin.readline
-    m, n, k = map(int,input().split())
-    maps = [[0]*n for _ in range(m)]
-    visited = maps.copy()
-
-    dx = [-1, 0, 1, 0]
-    dy = [0, 1, 0, -1]
-
-    for i in range(k):
-        ly, lx, ry, rx = map(int, input().split())
-        for j in range(lx, rx):
-            for k in range(ly, ry):
-                maps[j][k] = 1
-
-
-    
-    for i in range(m):
-        for j in range(n):
-            if maps[i][j] == 0 and visited[i][j] == 0:
-                count +=1
-                cnt +=1
-                visited[i][j] = 1
-                DFS(i,j)
-                result.append(cnt)
-                cnt = 0
-    
-    print(count)
-    result.sort()
-    print(' '.join(map(str,result)))
+print(k-1)
+print(*sorted(ans))
