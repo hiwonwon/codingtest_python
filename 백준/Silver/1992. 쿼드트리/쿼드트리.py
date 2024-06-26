@@ -1,26 +1,24 @@
-n = int(input())
-t = []
-for i in range(n):
-    t.append(list((input().rstrip())))
+import sys
 
+input=sys.stdin.readline
+n=int(input())
+graph=[]
+for _ in range(n):
+    graph.append(list(map(int,input().strip())))
 
-
-
-ans = []
-def devide(x,y,n):
-    tmp = t[x][y]
-    for i in range(x,x+n):
-        for j in range(y,y+n):
-            if t[i][j] != tmp:
-                ans.append("(")
-                devide(x,y,n//2)
-                devide(x,y+n//2,n//2)
-                devide(x+n//2,y,n//2)
-                devide(x+n//2,y+n//2,n//2)
-                ans.append(")")
+def recur(n,r,c):
+    curr=graph[r][c]
+    for i in range(r,r+n):
+        for j in range(c,c+n):
+            if graph[i][j]!=curr:
+                print('(',end='')
+                recur(n//2,r,c)
+                recur(n//2,r,c+n//2)
+                recur(n//2,r+n//2,c)
+                recur(n//2,r+n//2,c+n//2)
+                print(')',end='')
                 return
-    ans.append(tmp)
+    print(curr,end='')
+    return
 
-
-devide(0,0,n)
-print(*ans,sep="")
+recur(n,0,0)
