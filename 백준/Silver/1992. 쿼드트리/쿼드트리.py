@@ -1,24 +1,28 @@
 import sys
+input = sys.stdin.readline 
 
-input=sys.stdin.readline
-n=int(input())
-graph=[]
-for _ in range(n):
-    graph.append(list(map(int,input().strip())))
+def compress(x, y, size):
+    initial = matrix[x][y]
+    for i in range(x, x + size):
+        for j in range(y, y + size):
+            if matrix[i][j] != initial:
+                break
+        else:
+            continue
+        break
+    else:
+        return str(initial)
+    
+    half = size // 2
+    top_left = compress(x, y, half)
+    top_right = compress(x, y + half, half)
+    bottom_left = compress(x + half, y, half)
+    bottom_right = compress(x + half, y + half, half)
+    
+    return f"({top_left}{top_right}{bottom_left}{bottom_right})"
 
-def recur(n,r,c):
-    curr=graph[r][c]
-    for i in range(r,r+n):
-        for j in range(c,c+n):
-            if graph[i][j]!=curr:
-                print('(',end='')
-                recur(n//2,r,c)
-                recur(n//2,r,c+n//2)
-                recur(n//2,r+n//2,c)
-                recur(n//2,r+n//2,c+n//2)
-                print(')',end='')
-                return
-    print(curr,end='')
-    return
+N = int(input().strip())
+matrix = [input().strip() for _ in range(N)]
 
-recur(n,0,0)
+result = compress(0, 0, N)
+print(result)
