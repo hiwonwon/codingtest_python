@@ -1,32 +1,20 @@
-import sys
-sys.setrecursionlimit(10000)
+T = int(input())
 
-# M, N, K = map(int, sys.stdin.readline().split())
+for _ in range(T):
+    N = int(input())    
+    arr = [0 for _ in range(N+1)]
 
-
-a = int(input())
-
-result = []
-for i in range(a):
-    b = int(input())
-    all_li = []
-    for j in range(b):
-        all_li.append(list(map(int, sys.stdin.readline().split())))
-    
-    all_li.sort(key=lambda x:(x[0]))
-    # print(all_li)
-    sum = 0
-    t_li = [p[1] for p in all_li]
-    minnum = 1000000000000
-    for i, t  in enumerate(t_li):
-
-        if minnum < t:
-            sum+=1
+    for _ in range(N):
+        a,b = map(int,input().split())
+        arr[a] = b
         
-        minnum = min(minnum, t)
-    result.append(len(all_li)-sum)
-
-for i in result:
-    print(i)
+    maxnum = arr[1]
+    ans = 1
+    for i in range(2,N+1):
+        if(arr[i] < maxnum):
+            maxnum = arr[i]
+            ans += 1
+            
         
+    print(ans)
     
