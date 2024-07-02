@@ -1,28 +1,24 @@
-import sys
-input = sys.stdin.readline 
+size = int(input())
+matrix = [list(map(int, input())) for _ in range(size)]
 
-def compress(x, y, size):
-    initial = matrix[x][y]
-    for i in range(x, x + size):
-        for j in range(y, y + size):
-            if matrix[i][j] != initial:
-                break
-        else:
-            continue
-        break
-    else:
-        return str(initial)
-    
-    half = size // 2
-    top_left = compress(x, y, half)
-    top_right = compress(x, y + half, half)
-    bottom_left = compress(x + half, y, half)
-    bottom_right = compress(x + half, y + half, half)
-    
-    return f"({top_left}{top_right}{bottom_left}{bottom_right})"
+def divide(matrix, size):
+    s = 0
+    for m in matrix:
+        s += sum(m)
+    if s == 0:
+        return "0"
+    if s == size * size:
+        return "1"
 
-N = int(input().strip())
-matrix = [input().strip() for _ in range(N)]
+    size = size // 2
+    return (
+        "("
+        + divide([m[:size] for m in matrix[:size]], size)
+        + divide([m[size:] for m in matrix[:size]], size)
+        + divide([m[:size] for m in matrix[size:]], size)
+        + divide([m[size:] for m in matrix[size:]], size)
+        + ")"
+    )
 
-result = compress(0, 0, N)
-print(result)
+
+print(divide(matrix, size))
