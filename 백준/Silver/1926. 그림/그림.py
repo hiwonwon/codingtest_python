@@ -1,39 +1,29 @@
-from collections import deque
+import sys
 
-def bfs(i, k, visited):
-  q = deque()
-  q.append((i, k))
-  visited[i][k] = 1
-  size = 1
-  dx = [-1, 1, 0, 0]
-  dy = [0, 0, -1 ,1]
-  while q:
-    x, y = q.popleft()
-    visited[x][y] = 1
-    for i in range(4):
-      nx = x + dx[i]
-      ny = y + dy[i]
-      if 0 <= nx < n and 0 <= ny < m :
-        if visited[nx][ny] == 0 and board[nx][ny] == 1:
-          q.append((nx, ny))
-          visited[nx][ny] = 1
-          size += 1
-  return size 
-    
+N, M = map(int, sys.stdin.readline().split())
+G = []
 
-n, m = map(int, input().split(" "))
-board = [list(map(int, input().split(" "))) for _ in range(n)]
-visited = [[0] * m for _ in range(n)]
+for i in range(N):
+    S = list(map(int, sys.stdin.readline().split()))
+    G.append(S)
 
 cnt = 0
-maxsize = 0
-for i in range(n):
-  for k in range(m):
-    if visited[i][k] == 0 and board[i][k] == 1:
-      size = bfs(i, k, visited)
-      if size > maxsize :
-        maxsize = size
-      cnt += 1
+ret = 0
+for i in range(N):
+    for j in range(M):
+        if G[i][j] == 1:
+            cnt += 1
+            s = 1
+            stk = [(i, j)]
+            G[i][j] = 0
+            while stk:
+                r, c = stk.pop()
+                for nr, nc in [(r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)]:
+                    if 0 <= nr < N and 0 <= nc < M and G[nr][nc] == 1:
+                        stk.append((nr, nc))
+                        G[nr][nc] = 0
+                        s += 1
+            ret = max(ret, s)
 
 print(cnt)
-print(maxsize)
+print(ret)
