@@ -1,14 +1,13 @@
-n,k = map(int, input().split())
-nlist = [list(map(int, input().split())) for _ in range(n)]
+import sys
 
-mx = 0
-dp = [[0]*(k+1) for _ in range(n+1)]
-
-for i in range(0,n):
-    for j in range(1,k+1):
-        if nlist[i][0] > j:
-            dp[i][j] = dp[i-1][j]
-        else:
-            dp[i][j] = max(dp[i-1][j], nlist[i][1] + dp[i-1][j-nlist[i][0]])
-
-print(dp[n-1][k])
+n,k = map(int,sys.stdin.readline().split())
+arr = list()
+for _ in range(n):
+    w,v = map(int,sys.stdin.readline().split())
+    arr.append((w,v))
+dp = [0]*100001
+for a in arr:
+    for i in range(k,a[0]-1,-1):
+        dp[i] = max(dp[i-a[0]]+a[1],dp[i])
+print(dp[k])
+    
