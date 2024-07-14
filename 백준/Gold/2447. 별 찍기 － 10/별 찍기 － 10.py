@@ -1,18 +1,20 @@
-def draw_stars(n):
-  if n==1:
-    return ['*']
+import sys
+sys.setrecursionlimit(10**6)
 
-  Stars=draw_stars(n//3)
-  L=[]
+def append_star(LEN):
+    if LEN == 1:
+        return ['*']
 
-  for star in Stars:
-    L.append(star*3)
-  for star in Stars:
-    L.append(star+' '*(n//3)+star)
-  for star in Stars:
-    L.append(star*3)
+    Stars = append_star(LEN//3) 
+    L = []  
+   
+    for S in Stars:
+        L.append(S*3)
+    for S in Stars:
+        L.append(S+' '*(LEN//3)+S)
+    for S in Stars:
+        L.append(S*3)
+    return L
 
-  return L
-
-N=int(input())
-print('\n'.join(draw_stars(N)))
+n = int(sys.stdin.readline().strip())
+print('\n'.join(append_star(n)))
