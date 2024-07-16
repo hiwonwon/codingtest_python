@@ -1,65 +1,34 @@
-from collections import deque
+import sys
+sys.setrecursionlimit(20000)
+input = sys.stdin.readline
 
-n = int(input())
-paint = [list(input()) for _ in range(n)]
+N = int(input())
+visited = [[1]*N for _ in range(N)]
+visited_redgreen = [[1]*N for _ in range(N)]
+graph = [list(input()) for _ in range(N)]
+graph_redgreen = [[1]*N for _ in range(N)]
+for j in range(N):
+    for k in range(N):
+        graph_redgreen[j][k] = graph[j][k]
+        if graph[j][k] == 'G':
+            graph_redgreen[j][k] = 'R'
+# print(graph,graph_redgreen)
+def dfs(x,y,color,visited,graph):
+    visited[x][y]= 0
+    for a,b in [[0,1],[0,-1],[1,0],[-1,0]]:
+        if 0 <= a+x < N and 0 <= b+y < N:
+            if visited[a+x][b+y] and graph[a+x][b+y] == color:
+                dfs(a+x,b+y,color,visited,graph)
 
-#적녹색약 환자가 보는 그림
-rg_paint = [['']*n for _ in range(n)]
-for i in range(n):
-    for j in range(n):
-        if paint[i][j] == 'G':
-            rg_paint[i][j] = 'R'
-        else:
-            rg_paint[i][j] = paint[i][j]
-visited = [[0]*n for _ in range(n)]
-rg_visited = [[0]*n for _ in range(n)]
+cnt_mid = 0
+cnt_redgren = 0
+for i in range(N):
+    for j in range(N):
+        if visited[i][j]:
+            cnt_mid += 1
+            dfs(i,j,graph[i][j],visited,graph)
+        if visited_redgreen[i][j]:
+            cnt_redgren += 1
+            dfs(i,j,graph_redgreen[i][j],visited_redgreen,graph_redgreen)
 
-def count1(a,b,key):
-    q = deque()
-    q.append((a,b))
-    dx = [-1,1,0,0]
-    dy = [0,0,-1,1]
-    visited[a][b] == 1
-
-    while(q):
-        x,y = q.popleft()
-        for i in range(4):
-            nx = dx[i] + x
-            ny = dy[i] + y
-            if 0<= nx <n and 0<= ny <n and visited[nx][ny] == 0 and paint[nx][ny] == key:
-                q.append((nx,ny))
-                visited[nx][ny] = 1 
-
-def count2(a,b,key):
-    q = deque()
-    q.append((a,b))
-    dx = [-1,1,0,0]
-    dy = [0,0,-1,1]
-    rg_visited[a][b] == 1
-
-    while(q):
-        x,y = q.popleft()
-        for i in range(4):
-            nx = dx[i] + x
-            ny = dy[i] + y
-            if 0<= nx <n and 0<= ny <n and rg_visited[nx][ny] == 0 and rg_paint[nx][ny] == key:
-                q.append((nx,ny))
-                rg_visited[nx][ny] = 1 
-
-
-cnt1 =0
-cnt2 = 0
-
-for i in range(n):
-    for j in range(n):
-
-        if visited[i][j] == 0:
-            count1(i,j,paint[i][j])
-            cnt1 += 1
-
-
-        if rg_visited[i][j] == 0:
-            count2(i,j,rg_paint[i][j])
-            cnt2 += 1
-
-print(cnt1,cnt2)
+print(cnt_mid, cnt_redgren)
