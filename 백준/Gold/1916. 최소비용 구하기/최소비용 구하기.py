@@ -1,29 +1,40 @@
-import sys
 import heapq
+import os
 
-input = sys.stdin.readline
 
-n = int(input())
-m = int(input())
-graph = [[] for _ in range(n+1)]
-for i in range(m):
-    s,e,p = map(int,input().split())
-    graph[s].append([e,p])
+def main():
+    nums = map(int, os.read(0, os.stat(0).st_size).split())
+    N = next(nums)
+    M = next(nums)
+    G = [dict() for _ in range(N + 1)]
+    for _ in range(M):
+        u = next(nums)
+        v = next(nums)
+        w = next(nums)
+        pw = G[u].get(v, 1 << 29)
+        if w < pw:
+            G[u][v] = w
+    s = next(nums)
+    t = next(nums)
+    dist = [1 << 29] * (N + 1)
+    dist[s] = 0
+    p = 2 ** -20
+    queue = [0 + s * p]
+    while queue:
+        i = heapq.heappop(queue)
+        du = int(i // 1)
+        u = int(i % 1 / p)
+        if u == t:
+            break
+        if du > dist[u]:
+            continue
+        for v, w in G[u].items():
+            dv = du + w
+            if dv < dist[v]:
+                dist[v] = dv
+                heapq.heappush(queue, dv + v * p)
+    os.write(1, str(dist[t]).encode())
+    os._exit(0)
 
-start , dest = map(int,input().split())
-costs = [1e9 for _ in range(n+1)]
-heap = []
-costs[start] = 0
-heapq.heappush(heap,[0,start])
 
-while(heap):
-    cur_p, cur_v = heapq.heappop(heap)
-    if costs[cur_v] < cur_p:
-        continue
-    for  next_v, next_p in graph[cur_v]:
-        sum_c = cur_p + next_p 
-        if sum_c < costs[next_v]:
-            costs[next_v] = sum_c
-            heapq.heappush(heap,[sum_c, next_v])
-print(costs[dest])
- 
+main()
