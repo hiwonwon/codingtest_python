@@ -1,34 +1,27 @@
 import heapq
 
 def solution(operations):
-    answer = [0,0]
-    hq = []
-    
-    def i(x):
-        heapq.heappush(hq,x)
-        
-    def d():
-        del hq[-1]
-    def d_1():
-        del hq[0]
+    answer = []
+    heap = []
+    for i in operations:
+        if i[0] == "I":
+            n = int(i[2:])
+            heapq.heappush(heap,n)
+        #최솟값 삭제
+        if i[0] == "D" and i[2] == "-":
+            if len(heap)>0: 
+                heapq.heappop(heap)
+        #최댓값 삭제
+        if i[0] == "D" and i[2] =="1":
+            if len(heap)>0:
+                mx = max(heap)
+                heap.remove(mx)
             
-    for o in operations:
-        tmp = o.split()
-        
-        if tmp[0] == 'I':
-            i(int(tmp[1]))
-        elif tmp[0] == 'D':
-            if len(hq)!= 0 :
-                if tmp[1] == '-1':
-                    d_1()
-                else:
-                    d()
-            else:
-                continue
-                    
-    
-    if len(hq)>0:
-        answer[0] = max(hq)
-        answer[1] = min(hq)
-        
+    if len(heap)>0:
+        answer.append(max(heap))
+        answer.append(heapq.heappop(heap))
+    else:
+        answer.append(0)
+        answer.append(0)
+
     return answer
