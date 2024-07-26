@@ -1,16 +1,13 @@
 def solution(triangle):
     answer = 0
-    n = len(triangle)
-    
-    for i in range(1,n):
-        for j in range(0,len(triangle[i])):
-            
-            if j == 0 :
-                triangle[i][j] += triangle[i-1][j]
-            if j == (len(triangle[i])-1):
+    l = len(triangle)
+    for i in range(1,l):
+        for j in range(i+1):
+            if j == i:
                 triangle[i][j] += triangle[i-1][j-1]
-            if j != 0 and j != (len(triangle[i])-1) : 
-                triangle[i][j] += max(triangle[i-1][j-1],triangle[i-1][j])
-            
-    answer = max(triangle[n-1])
-    return answer
+            if j == 0:
+                triangle[i][j] += triangle[i-1][j]
+            if 0< j < i:
+                triangle[i][j] += max(triangle[i-1][j],triangle[i-1][j-1])
+    
+    return max(triangle[l-1])
