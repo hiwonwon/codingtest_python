@@ -1,30 +1,25 @@
-import sys
-input = sys.stdin.readline
+def is_channel_reachable(channel,broken_buttons):
+    channel_str=str(channel)
+    for char in channel_str:
+        if int(char) in broken_buttons:
+            return False
+    return True
 
-n = int(input())
-m =int(input())
+def minimum_button_presses(N,broken_buttons):
+    current_channel=100
+    min_presses=abs(N-current_channel)
+    for channel in range(max(0,N-500000),N+500000):
+        if is_channel_reachable(channel,broken_buttons):
+            presses=len(str(channel))+abs(N-channel)
+            min_presses=min(min_presses, presses)
+    return min_presses
 
-#고장난 버튼 0개인 경우를고려해서 미리 초기화
-btn = []
+N=int(input())
+M=int(input())
+if M > 0:
+    broken_buttons=set(map(int, input().split()))
+else:
+    broken_buttons=set()
 
-#고장난 버튼 0개인 경우 고려
-if m!= 0:
-    btn = list(input().split())
-
-ans = abs(100-n)
-
-for i in range(1000000):
-    tmp_list = str(i)
-    #고장난 버트포함 여부 체크
-    j = 0
-    while(j < len(tmp_list)):
-        if tmp_list[j] not in btn:
-            j+=1
-        else:
-            break
-    #고장난 버튼 포함 안했다면 
-    if j == len(tmp_list):
-        ans  = min(ans,len(tmp_list)+abs(i-n))
-
-
-print(ans)
+result=minimum_button_presses(N,broken_buttons)
+print(result)
