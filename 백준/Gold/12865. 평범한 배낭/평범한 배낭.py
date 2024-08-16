@@ -1,13 +1,21 @@
-import sys
+import sys; input = sys.stdin.readline
 
-n,k = map(int,sys.stdin.readline().split())
-arr = list()
-for _ in range(n):
-    w,v = map(int,sys.stdin.readline().split())
-    arr.append((w,v))
-dp = [0]*100001
-for a in arr:
-    for i in range(k,a[0]-1,-1):
-        dp[i] = max(dp[i-a[0]]+a[1],dp[i])
-print(dp[k])
-    
+# 향상된 DP 풀이
+def main():
+    n, k = map(int, input().split())
+    k += 1
+
+    bag = {0: 0}
+    data = [tuple(map(int,input().split())) for _ in range(n)]
+    data.sort(reverse=True)
+
+    for w, v in data:
+        tmp = {}
+        for v_bag, w_bag in bag.items():
+            if bag.get(nv := v + v_bag, k) > (nw := w + w_bag):
+                tmp[nv]=nw
+        bag.update(tmp)
+
+    print(max(bag.keys()))
+
+main()
