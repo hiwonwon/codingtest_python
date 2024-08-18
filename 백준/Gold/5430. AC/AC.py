@@ -1,38 +1,32 @@
-from collections import deque
 import sys
+from collections import deque
 
-input = sys.stdin.readline
+def check(command, arr):
+    is_reverse = 0 #0 -> 그대로, 1 -> 거꾸로
+    for c in command:
+        if c == 'R':
+            is_reverse = 1 if is_reverse == 0 else 0
+        elif c == 'D' and arr:
+            arr.popleft() if is_reverse == 0 else arr.pop()
+        else:
+            return 'error'
+    if is_reverse == 0:
+        return '[' + ','.join(arr) + ']'
+    else:
+        return '[' + ','.join(reversed(arr)) + ']'
 
-T = int(input())
+
+T = int(sys.stdin.readline().rstrip())
 
 for _ in range(T):
-    p = input().rstrip() 
-    n = int(input())  
-    arr = input().rstrip()[1:-1] 
+    command = sys.stdin.readline().rstrip()
+    n = sys.stdin.readline()
 
-    if arr:
-        arr = deque(arr.split(","))
+    if n == '0\n':
+        sys.stdin.readline()
+        arr = []
     else:
-        arr = deque()
+        arr = sys.stdin.readline().strip("[]\n").split(',')
     
-    reverse = False  # 배열의 뒤집힘 상태
-    error = False  # 에러 발생 여부
-
-    for cmd in p:
-        if cmd == 'R':
-            reverse = not reverse
-        elif cmd == 'D':
-            if arr:
-                if reverse:
-                    arr.pop()
-                else:
-                    arr.popleft()
-            else:
-                error = True
-                break
-    if error:
-        print("error")
-    else:
-        if reverse:
-            arr.reverse()  # 최종적으로 뒤집힌 상태면 뒤집어 줌
-        print("[" + ",".join(arr) + "]")
+    arr = deque(arr)
+    print(check(command, arr))
