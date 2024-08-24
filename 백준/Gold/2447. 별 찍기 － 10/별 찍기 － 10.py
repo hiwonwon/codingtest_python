@@ -1,20 +1,21 @@
-import sys
-sys.setrecursionlimit(10**6)
+N = int(input())
 
-def append_star(LEN):
-    if LEN == 1:
+def star(n):
+    if n == 1:
         return ['*']
 
-    Stars = append_star(LEN//3) 
-    L = []  
-   
-    for S in Stars:
-        L.append(S*3)
-    for S in Stars:
-        L.append(S+' '*(LEN//3)+S)
-    for S in Stars:
-        L.append(S*3)
-    return L
+    arr = star(n//3)
+    stars = []
 
-n = int(sys.stdin.readline().strip())
-print('\n'.join(append_star(n)))
+    for i in arr:
+        stars.append(i*3)
+
+    for i in arr:
+        stars.append(i+' '*(n//3)+i)
+
+    for i in arr:
+        stars.append(i*3)
+
+    return stars
+
+print('\n'.join(star(N)))
