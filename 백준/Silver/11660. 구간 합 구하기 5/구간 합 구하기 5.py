@@ -1,24 +1,12 @@
-import copy
-n, m = [int(x) for x in input().split()]
-nums = [[int(x)for x in input().split()] for _ in range(n)]
-coordinates = [[int(x)for x in input().split()] for _ in range(m)]
+n, a = map(int, input().split())
 
-for i in range(n):
-    for j in range(n):
-        left = nums[i][j-1] if j > 0 else 0
-        top = nums[i-1][j] if i > 0 else 0
-        cross = nums[i-1][j-1] if i > 0 and j > 0 else 0
-        nums[i][j] += left + top - cross
-        
+arr = [list(map(int, input().split())) for _ in range(n)]
+ns = [[0]*(n+1) for _ in range(n+1)]
 
-def get_partial_sum(list: list[int]) -> int:
-    x1, y1, x2, y2 = list
-    raw = nums[x2-1][y2-1]
-    left = nums[x2-1][y1-2] if y1-2 > -1 else 0
-    top = nums[x1-2][y2-1] if x1-2 > -1 else 0
-    cross = nums[x1-2][y1-2] if y1-2 > -1 and x1-2 > -1 else 0
-    return nums[x2-1][y2-1] - left - top + cross
-    
-    
-for coordinate in coordinates:
-    print(get_partial_sum(coordinate))
+for i in range(1,n+1):
+    for j in range(1,n+1):
+        ns[i][j] = arr[i-1][j-1] + ns[i-1][j] + ns[i][j-1] - ns[i-1][j-1]
+
+for i in range(a):
+    p, q, r, s = map(int, input().split())
+    print(ns[r][s] - ns[p-1][s] - ns[r][q-1] + ns[p-1][q-1])
