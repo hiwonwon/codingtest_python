@@ -1,12 +1,13 @@
-n, a = map(int, input().split())
+# ex_11660
+import sys
+N,M = map(int, sys.stdin.readline().split())
+graph = [list(map(int, sys.stdin.readline().split())) for _ in range(N)]
+dp = [[0]*(N+1) for _ in range(N+1)]
 
-arr = [list(map(int, input().split())) for _ in range(n)]
-ns = [[0]*(n+1) for _ in range(n+1)]
-
-for i in range(1,n+1):
-    for j in range(1,n+1):
-        ns[i][j] = arr[i-1][j-1] + ns[i-1][j] + ns[i][j-1] - ns[i-1][j-1]
-
-for i in range(a):
-    p, q, r, s = map(int, input().split())
-    print(ns[r][s] - ns[p-1][s] - ns[r][q-1] + ns[p-1][q-1])
+for i in range(1,N+1):
+    for j in range(1,N+1):
+        dp[i][j] = dp[i][j-1] + dp[i-1][j] - dp[i-1][j-1] + graph[i-1][j-1]
+        
+for _ in range(M):
+    x1,y1,x2,y2 = map(int, sys.stdin.readline().split())
+    print(dp[x2][y2]-dp[x1-1][y2]-dp[x2][y1-1]+dp[x1-1][y1-1])
