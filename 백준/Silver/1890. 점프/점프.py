@@ -1,23 +1,27 @@
-n = int(input())
-graph = [list(map(int,input().split())) for _ in range(n)]
+from sys import stdin
+input = stdin.readline
 
 
-ans = 0
-dp = [[0]*n for _ in range(n)] 
-dp [0][0] = 1
+def get_case_of_way(length: int, board: list[list[int]]) -> int:
+    dp = [[0] * length for _ in range(length)]
+    dp[0][0] = 1
+    
+    for row in range(length):
+        for col in range(length):
+            curr_value = dp[row][col]
+            dist = board[row][col]
+            
+            if row == length-1 and col == length-1:
+                return curr_value
+            
+            if row + dist < length:
+                dp[row + dist][col] += curr_value
+                
+            if col + dist < length:
+                dp[row][col + dist] += curr_value
 
-def sol():
-    for i in range(n):
-        for j in range(n):
-            k = graph[i][j]
-            if k == 0 or dp[i][j] == 0:
-                continue
-            #아래쪽으로 이동하는 경우
-            if i + k < n:
-                dp[i+k][j] += dp[i][j]
-            #오른쪽으로 이동하는 경우
-            if j+k < n :
-                dp[i][j+k] += dp[i][j]
-    return dp[-1][-1]
 
-print(sol())
+length = int(input())
+board = [list(map(int, input().split())) for _ in range(length)]
+case_of_way = get_case_of_way(length, board)
+print(case_of_way)
