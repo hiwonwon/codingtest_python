@@ -1,28 +1,38 @@
 import sys
-sys.setrecursionlimit(1000000) # 재귀 깊이 제한 늘리기
 input = sys.stdin.readline
-n, m = map(int,input().split())
+
+n, m = map(int, input().split())
+
 parent = [i for i in range(n + 1)]
+rank = [0] * (n + 1)
 
-def find_parent(x):
-    if parent[x] != x:
-        parent[x] = find_parent(parent[x])
-    return parent[x]
 
-def union_parent(a,b):
-    a = find_parent(a)
-    b = find_parent(b)
-    if a < b :
-        parent[b] = a
+def find(v):
+    if parent[v] == v:
+        return v
     else:
-        parent[a] = b
+        parent[v] = find(parent[v])
+        return parent[v]
+
+
+def union(a, b):
+    a = find(a)
+    b = find(b)
+    if a == b:
+        return False
+
+    if rank[a] < rank[b]:
+        a, b = b, a
+    parent[b] = a
+
+    if rank[a] == rank[b]:
+        rank[a] += 1
+    return True
+
 
 for _ in range(m):
-    opr, a, b = map(int, input().split())
-    if opr == 0:
-        union_parent(a,b)
+    q, a, b = map(int, input().split())
+    if q == 0:
+        union(a, b)
     else:
-        if find_parent(a) == find_parent(b):
-            print("YES")
-        else:
-            print("NO")
+        print('YES' if find(a) == find(b) else 'NO')
