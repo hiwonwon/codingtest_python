@@ -1,16 +1,11 @@
-import sys
+n, k = map(int, input().split())
 
-n, k = map(int, sys.stdin.readline().rstrip().split())
+D = [1] + [0] * (k)
 
-coin_list = []
-for i in range(n):
-    coin_list.append(int(sys.stdin.readline()))
-coin_list.sort()
+for _ in range(n):
+    i = int(input())
+    for j in range(k):
+        if D[j] != 0 and j + i <= k:
+            D[j + i] += D[j]
 
-dp_table = [0] * (k + 1)
-dp_table[0] = 1
-
-for i in coin_list:
-    for j in range(i, k+1):
-        dp_table[j] += dp_table[j-i]
-print(dp_table[k])
+print(D[-1])
