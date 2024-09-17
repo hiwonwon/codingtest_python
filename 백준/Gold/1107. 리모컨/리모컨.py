@@ -1,34 +1,26 @@
-# ban이 아닌 것 중에 가장 가까운 수 찾기
-def judge(x):
-    if x in ban:
-        return True
-    return False
+def is_possible(channel, broken_buttons):
+    for ch in str(channel):
+        if int(ch) in broken_buttons:
+            return False
+    return True
 
-n = int(input())
-k = int(input())
-if k == 0:
-    print(min(len(str(n)),abs(n-100)))
-    exit(0)
-ban = list(map(int,input().split()))
-MIN = abs(n-100)
-targetNum = list(str(n))
-for i in range(1000001):
-    candidateNum = list(str(i))
-    bit = 0
-    for j in candidateNum:
-        if judge(int(j)):
-            bit = 1
-            break
-    if bit == 1:
-        continue
-    cnt = abs(i-n)
-    MIN = min(MIN,cnt + len(str(i)))
+def min_button_presses(target_channel, broken_buttons):
+    min_presses = abs(target_channel - 100)  # +, - 버튼만으로 이동하는 경우
 
-print(MIN)
+    for channel in range(1000000):  # 채널 범위 설정
+        if is_possible(channel, broken_buttons):
+            presses = len(str(channel)) + abs(channel - target_channel)
+            min_presses = min(min_presses, presses)
 
+    return min_presses
 
+# 입력 받기
+target_channel = int(input())
+broken_count = int(input())
+if broken_count > 0:
+    broken_buttons = set(map(int, input().split()))
+else:
+    broken_buttons = set()
 
-
-
-
-
+# 결과 출력
+print(min_button_presses(target_channel, broken_buttons))
