@@ -1,24 +1,36 @@
+import sys
 from collections import deque
-n, k = map(int,input().split())
-
-visited = [0] * 100001
-
-def bfs():
+input = sys.stdin.readline
+ 
+a,b = map(int,input().split())
+limit = 100001
+time = [0]*limit
+ 
+def bfs(x,y):
     q = deque()
-    q.append(n)
-
-    while(q):
+    if x == 0 :
+        q.append(1)
+    else :
+        q.append(x)
+    
+    while q:
         x = q.popleft()
-        if x == k:
-            print(visited[x])
-            return
-        for j in (x-1,x+1,x*2):
-            if 0<=j<=100000 and visited[j] == 0:
-                if j == 2*x and j != 0:
-                    visited[j] = visited[x]
-                    q.appendleft(j)
-                else:
-                    visited[j] = visited[x] + 1
-                    q.append(j)
-
-bfs()
+        if y == x :
+            return time[x]
+        
+        for nx in (x-1,x+1,x*2):
+            if 0 <= nx < limit and time[nx]==0:
+                if nx == 2*x :
+                    time[nx] = time[x]
+                    q.appendleft(nx)
+                else : 
+                    time[nx] = time[x] + 1
+                    q.append(nx)
+ 
+if a==0:
+    if b==0:
+        print(0)
+    else:
+        print(bfs(a,b)+1)
+else :
+    print(bfs(a,b))
