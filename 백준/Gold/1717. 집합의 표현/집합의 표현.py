@@ -1,22 +1,36 @@
 import sys
-n,m = map(int, input().split())
-s = [-1]*(n+1)
-ipt = list(map(int, sys.stdin.read().split()))
-def find(x):
-    if s[x] == -1:
-        return x
-    s[x] = find(s[x])
-    return s[x]
-def plus(x,y):
-    if find(x)!=find(y):
-        s[find(y)] = find(x)
-    return
-for _ in range(m):
-    cal, a, b = ipt[_*3], ipt[_*3+1], ipt[_*3+2]
-    if cal == 0:
-        plus(a,b)
-    else:
-        if find(a) == find(b):
-            print("YES")
-        else:
-            print("NO")
+
+
+readline = sys.stdin.readline
+N, M = map(int, readline().split())
+
+dp = [-1] * (N+1)
+
+def find(i):
+    if dp[i] < 0: return i
+
+    dp[i] = find(dp[i])
+
+    return dp[i]
+
+def union(a, b):
+    if a == b: return
+
+    ra, rb = find(a), find(b)
+    if ra == rb: return
+    
+    if dp[ra] < dp[rb]: 
+        dp[ra] += dp[rb]
+        dp[rb] = ra
+    else: 
+        dp[rb] += dp[ra]
+        dp[ra] = rb
+
+for _ in range(M):
+    command, a, b = map(int, readline().split())
+
+    if command:
+        answer = 'yes' if find(a) == find(b) else 'no'
+        sys.stdout.write(answer + '\n')
+        
+    else: union(a, b)
