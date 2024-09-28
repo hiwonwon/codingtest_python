@@ -1,28 +1,46 @@
-import sys
+# from heapq import heappush, heappop, heapify
+# from collections import deque
 from itertools import combinations
-
+# from bisect import bisect_left, bisect_right
+import sys
 input = sys.stdin.readline
+mis = lambda: map(int, input().split())
+INF = float('inf')
+# mOD = 10**9 + 7
+# sys.setrecursionlimit(10**6)
+# dx = [0, 1, -1, 0]
+# dy = [1, 0, 0, -1]
+# dx = [0, -1, 1, 0, -1, -1, 1, 1]
+# dy = [1, 0, 0, -1, 1, -1, 1, -1]
 
-N, M = map(int, input().split())
-chicken = []
-house = []
+n, m = mis()
+city = [[*mis()] for _ in range(n)]
 
-for i in range(N):
-    row = list(map(int, input().split()))
-    for j in range(N):
-        if row[j] == 1:
-            house.append((i, j))
-        elif row[j] == 2:
-            chicken.append((i, j))
+houses = []
+chickens = []
+for i in range(n):
+    for j in range(n):
+        if city[i][j] == 1:
+            houses.append((i, j))
+        elif city[i][j] == 2:
+            chickens.append((i, j))
 
-def get_distance(a, b):
-    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+def solve(arr):
+    ret = 0
+    for i in houses:
+        dist = INF
+        
+        for j in arr:
+            tmp = abs(i[0] - j[0]) + abs(i[1] - j[1])
+            dist = min(dist, tmp)
+            
+        ret += dist
+        
+    return ret
 
-def get_city_chicken_distance(selected_chicken):
-    return sum(min(get_distance(h, c) for c in selected_chicken) for h in house)
+ans = INF
+for i in combinations(chickens, m):
+    distance = solve(i)
+    ans = min(ans, distance)
 
-min_distance = float('inf')
-for combi in combinations(chicken, M):
-    min_distance = min(min_distance, get_city_chicken_distance(combi))
-
-print(min_distance)
+print(ans)
