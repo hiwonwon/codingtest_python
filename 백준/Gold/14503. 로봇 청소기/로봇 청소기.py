@@ -1,40 +1,57 @@
+#동 -> 동북서남
+#서 -> 서남동북
+#남 -> 남동북서
+#북 -> 북서남동
+# 재귀
+# for문 안에서 좌표 전진가능하면(0) cnt += 1
+# 종료 조건 : 전역변수 flag가 True 일 때. for문 모두 (1) 이면 전역 변수 flag 종료로 만듦
+
 import sys
+sys.setrecursionlimit(10**6)
+input = sys.stdin.readline
 
-N, M = map(int, sys.stdin.readline().split()) # 방의 크기
-r, c, d = map(int, sys.stdin.readline().split()) # 시작 좌표, 방향
-# 0 북 / 1 동 / 2 남 / 3 서
-
-arr = [list(map(int, sys.stdin.readline().split())) for _ in range(N)]
-
-di = [-1, 0, 1, 0] # 북 동 남 서
-dj = [0, 1, 0, -1]
-k = d
-i, j = r, c 
 cnt = 0
+E = (0,1)
+W = (0,-1)
+S = (1,0)
+N = (-1,0)
+direction_dict = {0:[W,S,E,N], 1:[N,W,S,E], 2:[E,N,W,S], 3:[S,E,N,W]}
+dir_num = {N:0, E:1, S:2, W:3}
 
-while 1:
-    # print(i, j)
-    # print(cnt)
-    # print(arr)
-    if arr[i][j] == 0:  # 청소하기
+def clean(i,j,d):
+    global cnt
+    # global stop
+    # if stop:
+    #     return
+    if maps[i][j] == 0:
         cnt += 1
-        arr[i][j] = 3 
+        maps[i][j] = -1
+        
+    dirs = direction_dict[d] #방향 우선순위 배열
     
-    if 0 < i < N - 1 and 0 < j < M - 1 and (0 in [arr[i - 1][j], arr[i][j + 1], arr[i + 1][j], arr[i][j - 1]]):
-         # 주변에 청소하지 않은 칸이 있다면        
-        while 1:
-            k = (k + 3) % 4  # 90도 회전
-            if arr[i + di[k]][j + dj[k]] == 0:
-                i += di[k]
-                j += dj[k] 
-                break # 90도 회전 멈춤
+    for dir in dirs:
+        r = dir[0]
+        c = dir[1]
+        if maps[i+r][j+c] == 0: #청소 안된 경우
+            new_d = dir_num[dir]
+            clean(i+r, j+c, new_d)
+            return
+    #4방향 모두 청소됐을 때      
+    r,c = dirs[-1] 
+    r, c = r*(-1), c*(-1) #후진 좌표
+    
+    if maps[i+r][j+c] != 1: #벽이 아닐 때
+    #     print("후진")
+        clean(i+r, j+c, d)
+        return
+            
+n, m = map(int,input().rstrip().split())
 
-    else: # 주변이 다 청소됐다면
-        if 0 <= i + (di[k] * -1) < N and  0 <= j + (dj[k] * -1) < M and arr[i + (di[k] * -1)][j + (dj[k] * -1)] != 1:   
-            # 방향을 유지한 채로 뒤가 벽이 아니라면
-            i += (di[k] * -1)     # 후진
-            j += (dj[k] * -1) 
-        else:   # 뒤가 벽이라면
-            break
+r, c, d = map(int,input().rstrip().split())
 
+maps = []
+for _ in range(n):
+    maps.append(list(map(int,input().rstrip().split())))
+    
+clean(r,c,d)
 print(cnt)
