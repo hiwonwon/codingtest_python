@@ -1,14 +1,17 @@
 def solution(numbers, target):
     answer = 0
-    ans = [0]
     
+    leaves = [0]
     
-    
-    for i in numbers:
-        graph = []
-        for j in ans:
-            graph.append(j-i)
-            graph.append(j+i)
-        ans = graph
+    for num in numbers:
+        tmp =[]
+        #leaves는 이전의 노드
+        for leaf in leaves:
+            tmp.append(leaf-num)
+            tmp.append(leaf+num)
             
-    return ans.count(target)
+        leaves = tmp
+            
+    answer = leaves.count(target)        
+    
+    return answer
