@@ -1,17 +1,17 @@
 import sys
 
-n =int(input())
+line = int(sys.stdin.readline())
+first, second, third = map(int, sys.stdin.readline().split())
+last = [[first, first], [second, second], [third, third]] # 젤 위에 값들을 먼저 세팅
 
-#한줄만 먼저 입력받고 dp에 저장
-nums = list(map(int,input().split()))
+for _ in range(line-1):
+    a, b, c = map(int, sys.stdin.readline().split())
+    temp1 = a + min(last[0][0], last[1][0])
+    temp2 = a + max(last[0][1], last[1][1])
+    temp3 = b + min(last[0][0], last[1][0], last[2][0])
+    temp4 = b + max(last[0][1], last[1][1], last[2][1])
+    temp5 = c + min(last[1][0], last[2][0])
+    temp6 = c + max(last[1][1], last[2][1])
+    last = [[temp1, temp2], [temp3, temp4], [temp5, temp6]]
 
-maxdp = nums
-mindp = nums
-
-for _ in range(n-1):
-    nums = list(map(int,input().split()))
-    maxdp = [nums[0]+max(maxdp[0],maxdp[1]),nums[1]+max(maxdp[0],maxdp[1],maxdp[2]),nums[2]+max(maxdp[1],maxdp[2])]
-    mindp = [nums[0]+min(mindp[0],mindp[1]),nums[1]+min(mindp[0],mindp[1],mindp[2]),nums[2]+min(mindp[1],mindp[2])]
-
-
-print(max(maxdp),min(mindp))
+print(max(last[0][1], last[1][1], last[2][1]), min(last[0][0], last[1][0], last[2][0]))
