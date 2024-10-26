@@ -1,27 +1,31 @@
 import sys
-import itertools
+input = sys.stdin.readline
 
-n = int(sys.stdin.readline())
-arr = list(map(int,sys.stdin.readline().split()))
-arr.sort()
+def check(s, e):
+    prv = log[0]
+    cur = abs(arr[s] + arr[e])
 
-left = 0
-right = n-1
-mini = float('inf')
-ans = []
+    if cur < prv:
+        log[0], log[1], log[2] = cur, arr[s], arr[e]
 
-while(left<right):
-    total = arr[left]+arr[right]
-    if abs(total) < mini:
-        mini = abs(total)
-        ans = [arr[left],arr[right]]
-    #합이 음수라면 음수의 정수가 더 작아져야하므로 left에 +1
-    if total < 0:
-        left += 1
-    #합이 양수라면 양수의 정수가 더 작아져야하므로
+N = int(input())
+arr = list(map(int, input().split()))
+
+s = 0
+e = N - 1
+log = [sys.maxsize, 0, 0]
+while s < e:
+    check(s, e)
+
+    if arr[s] + arr[e] > 0:
+        e -= 1
+    elif arr[s] + arr[e] < 0:
+        s += 1
     else:
-        right -= 1
-    
-    
+        s += 1
+        e -= 1
 
+
+
+ans = sorted(log[1:])
 print(*ans)
