@@ -1,30 +1,32 @@
+import sys
 from collections import deque
 
-Y, X = map(int, input().split())
-bomul_map = [list(input().rstrip()) for _ in range(Y)]
+N, M = map(int, sys.stdin.readline().split())
 
-maxi = 0
-for y in range(Y):
-    for x in range(X):
-        if bomul_map[y][x] == 'L':
-            visited = [[0] * X for _ in range(Y)]
-            dist = [[0] * X for _ in range(Y)]
+graph = [list(str(sys.stdin.readline().strip())) for _ in range(N)]
+L_list = []
+for i in range(N):
+    for j in range(M):
+        if graph[i][j] == 'L':
+            L_list.append((i, j))
 
-            # BFS
-            q = deque()
-            q.append((y, x))
-            visited[y][x] = 1
+directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+result = 0
+while L_list:
+    x, y = L_list.pop(0)
+    queue = deque([((x, y), 0)])
+    visited = [[0] * M for _ in range(N)]
+    visited[x][y] = 1
 
-            while len(q) > 0:
-                c_y, c_x = q.popleft()
-                for dy, dx in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
-                    ny, nx = c_y + dy, c_x + dx
-                    if 0 <= ny < Y and 0 <= nx < X and bomul_map[ny][nx] == 'L':
-                        if visited[ny][nx] == 0:
-                            visited[ny][nx] = 1
-                            dist[ny][nx] = max(dist[c_y][c_x]+1, dist[ny][nx])
-                            maxi = max(maxi, dist[ny][nx])
-                            q.append((ny, nx))
+    while queue:
+        coordinate, count = queue.popleft()
+        x, y = coordinate[0], coordinate[1]
 
-
-print(maxi)
+        for i, j in directions:
+            nx, ny = x + i, y + j
+            if 0 <= nx < N and 0 <= ny < M and graph[nx][ny] == 'L' and visited[nx][ny] == 0:
+                visited[nx][ny] = 1
+                queue.append([(nx, ny), count + 1])
+                result = max(result, count + 1)
+print(result)
+        
