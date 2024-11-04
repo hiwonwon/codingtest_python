@@ -1,32 +1,54 @@
-import sys
 from collections import deque
 
-N, M = map(int, sys.stdin.readline().split())
+N, M = map(int, input().split())
+board = []
+visited = [[0 for _ in range(M)] for _ in range(N)]
 
-graph = [list(str(sys.stdin.readline().strip())) for _ in range(N)]
-L_list = []
+dx = [0, 0, -1, 1]
+dy = [-1, 1, 0, 0]
+
+for _ in range(N):
+    string = input()
+    line = []
+
+    for s in string:
+        line.append(s)
+
+    board.append(line)
+
+
+def in_range(x, y):
+    return 0 <= x < N and 0 <= y < M
+
+
+def bfs(a, b):
+    max_t = 0
+    visited[a][b] += 1
+    if max_t < visited[a][b]:
+        max_t = visited[a][b]
+    q = deque([(a, b)])
+
+    while q:
+        x, y = q.popleft()
+        for k in range(4):
+            nx, ny = x + dx[k], y + dy[k]
+            if in_range(nx, ny) and not visited[nx][ny] and board[nx][ny] == board[x][y]:
+                visited[nx][ny] = visited[x][y] + 1
+                if max_t < visited[nx][ny]:
+                    max_t = visited[nx][ny]
+                q.append((nx, ny))
+
+    return max_t
+
+result = 0
 for i in range(N):
     for j in range(M):
-        if graph[i][j] == 'L':
-            L_list.append((i, j))
+        if board[i][j] == 'L':
+            max_t = bfs(i, j)
 
-directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-result = 0
-while L_list:
-    x, y = L_list.pop(0)
-    queue = deque([((x, y), 0)])
-    visited = [[0] * M for _ in range(N)]
-    visited[x][y] = 1
+            if result < max_t:
+                result = max_t
 
-    while queue:
-        coordinate, count = queue.popleft()
-        x, y = coordinate[0], coordinate[1]
+            visited = [[0 for _ in range(M)] for _ in range(N)]
 
-        for i, j in directions:
-            nx, ny = x + i, y + j
-            if 0 <= nx < N and 0 <= ny < M and graph[nx][ny] == 'L' and visited[nx][ny] == 0:
-                visited[nx][ny] = 1
-                queue.append([(nx, ny), count + 1])
-                result = max(result, count + 1)
-print(result)
-        
+print(result-1)
