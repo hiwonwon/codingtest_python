@@ -1,25 +1,21 @@
 import heapq
+import sys
+N=int(sys.stdin.readline().rstrip())
+classes=[list(map(int,sys.stdin.readline().split())) for i in range(N)]
+classes.sort()
+time_table=[]
+heapq.heappush(time_table,classes[0][1])
 
-n = int(input())
-q = []
-for _ in range(n):
-    s,t = map(int,input().split())
-    q.append([s,t])
 
-q.sort()
-
-room = []
-heapq.heappush(room,q[0][1])
-
-for i in range(1,n):
-    #항상 최솟값과 비교
-    if q[i][0] < room[0]:
-        heapq.heappush(room,q[i][1])
+for i in range(1,N):
+    if time_table[0] > classes[i][0]:
+        heapq.heappush(time_table,classes[i][1])
     else:
-        heapq.heappop(room)
-        heapq.heappush(room,q[i][1])
+        heapq.heappop(time_table)
+        heapq.heappush(time_table,classes[i][1])
 
 
+print(len(time_table))
 
+   
 
-print(len(room))
