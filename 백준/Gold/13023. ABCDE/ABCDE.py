@@ -1,36 +1,35 @@
-n, m = map(int,input().split())
+import sys
+sys.setrecursionlimit(10000)
+input = sys.stdin.readline
 
-ans = 0
-friends = [[] for _ in range(n)]
+n, m = map(int, input().split())
+tree = [[] for _ in range(n)]
+visited = [False] * n
+result = False
 
-for i in range(m):
-    a,b = map(int,input().split())
-    friends[a].append(b)
-    friends[b].append(a)
+for _ in range(m):
+    s, e = map(int, input().split())
+    tree[s].append(e)
+    tree[e].append(s)
 
-def dfs(x,visited,cnt):
-    
-    global ans
-    
-    if cnt == 4:
-        ans = 1
+def dfs(v, depth):
+    global result
+
+    visited[v] = True
+
+    if depth == 4:
+        result = True
         return
-    visited[x] = True
 
-    for i in friends[x]:
-        if not visited[i]:
-            visited[i] = True
-            dfs(i,visited,cnt+1)
-    visited[x] = False
-    
+    for cur_v in tree[v] :
+        if not visited[cur_v]:
+            dfs(cur_v, depth + 1)
+
+    visited[v] = False
 
 for i in range(n):
-    ans = 0
-    
-    visited =  [False for _ in range(n)]
-    dfs(i,visited,0)
-    if ans == 1:
-        break
-        
+    dfs(i, 0)
+    if result: break
 
-print(ans)
+if result: print(1)
+else: print(0)
