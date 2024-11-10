@@ -1,35 +1,23 @@
-import sys
-sys.setrecursionlimit(10000)
-input = sys.stdin.readline
+N, K = list(map(int, input().split()))
+from collections import defaultdict, deque
+edges = defaultdict(list)
+for _ in range(K):
+    u, v = list(map(int, input().split()))
+    edges[u].append(v)
+    edges[v].append(u)
 
-n, m = map(int, input().split())
-tree = [[] for _ in range(n)]
-visited = [False] * n
-result = False
 
-for _ in range(m):
-    s, e = map(int, input().split())
-    tree[s].append(e)
-    tree[e].append(s)
+def dfs(node, length, seen):
+    if length == 5: exit(print(1))
+    for edge in edges[node]:
+        if edge not in seen:
+            seen.add(edge)
+            dfs(edge, length + 1, seen)
+            seen.discard(edge)
 
-def dfs(v, depth):
-    global result
 
-    visited[v] = True
 
-    if depth == 4:
-        result = True
-        return
+for node in range(N):
+    dfs(node, 1, set([node]))
 
-    for cur_v in tree[v] :
-        if not visited[cur_v]:
-            dfs(cur_v, depth + 1)
-
-    visited[v] = False
-
-for i in range(n):
-    dfs(i, 0)
-    if result: break
-
-if result: print(1)
-else: print(0)
+print(0)
