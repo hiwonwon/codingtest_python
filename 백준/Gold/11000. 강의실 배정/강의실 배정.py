@@ -1,21 +1,34 @@
-import heapq
+""" Solution 1) pq """
+# from heapq import heappop, heappush
+# import sys
+# input = sys.stdin.readline
+
+# pq = [0]
+# for s, t in sorted(tuple(map(int, input().split())) for _ in range(int(input()))):
+#     heappush(pq, t)
+#     if s >= pq[0]: heappop(pq)
+
+# print(len(pq))
+
+""" Solution 2) """
 import sys
-N=int(sys.stdin.readline().rstrip())
-classes=[list(map(int,sys.stdin.readline().split())) for i in range(N)]
-classes.sort()
-time_table=[]
-heapq.heappush(time_table,classes[0][1])
+input = sys.stdin.readline
 
+st, ed = [], []
+for _ in range(int(input())):
+    s, t = map(int, input().split())
+    st.append(s)
+    ed.append(t)
+st.sort(); ed.sort()
 
-for i in range(1,N):
-    if time_table[0] > classes[i][0]:
-        heapq.heappush(time_table,classes[i][1])
-    else:
-        heapq.heappop(time_table)
-        heapq.heappush(time_table,classes[i][1])
+res = 1
+cnt = 0
+i = 0
+for s in st:
+    cnt += 1
+    while ed[i] <= s:
+        cnt -= 1
+        i += 1
+    if cnt > res: res = cnt
 
-
-print(len(time_table))
-
-   
-
+print(res)
