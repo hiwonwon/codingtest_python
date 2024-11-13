@@ -1,16 +1,4 @@
-""" Solution 1) pq """
-# from heapq import heappop, heappush
-# import sys
-# input = sys.stdin.readline
 
-# pq = [0]
-# for s, t in sorted(tuple(map(int, input().split())) for _ in range(int(input()))):
-#     heappush(pq, t)
-#     if s >= pq[0]: heappop(pq)
-
-# print(len(pq))
-
-""" Solution 2) """
 import sys
 input = sys.stdin.readline
 
