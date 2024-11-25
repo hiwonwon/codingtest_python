@@ -1,33 +1,40 @@
-from collections import deque
 import sys
 input = sys.stdin.readline
 
-def bfs():
-    q = deque()
-    q.append((home_x, home_y))
-    while q:
-        x, y = q.popleft()
-        if abs(x - festival_x) + abs(y - festival_y) <= 1000:
-            print("happy")
-            return
-        for i in range(n):
-            if not visited[i]:
-                new_x, new_y = g[i]
-                if abs(x - new_x) + abs(y - new_y) <= 1000:
-                    visited[i] = 1
-                    q.append((new_x, new_y))
-    print("sad")
-    return
+def dist(a, b):
+    '''
+    a, b는 모두 (x, y) 좌표
+    '''
+    return abs(a[0]-b[0]) + abs(a[1]-b[1])
 
-t = int(input())
+T = int(input())
+answer = []
+for t in range(T):
+    N = int(input())
+    home = list(map(int, input().split()))
+    stores = []
+    for _ in range(N):
+        stores.append(list(map(int, input().split())))
+    dst = list(map(int, input().split()))
 
-for i in range(t):
-    n = int(input())
-    home_x, home_y = map(int,input().split())
-    g = []
-    for j in range(n):
-        x, y = map(int,input().split())
-        g.append((x, y))
-    festival_x, festival_y = map(int,input().split())
-    visited = [0 for _ in range(n + 1)]
-    bfs()
+    happy_flag = False
+    visit = [0 for _ in range(N)]
+    stack = [home]
+    while stack:
+        cur = stack.pop()
+        if dist(cur, dst) <= 1000: # 락 페스티벌에 도달 가능?
+            answer.append('happy')
+            happy_flag = True
+            break
+        
+        for i, store in enumerate(stores):
+            if visit[i]:
+                continue
+            if dist(cur, store) <= 1000:
+                stack.append(store)
+                visit[i] = 1
+    if not happy_flag:
+        answer.append('sad')
+
+for t in range(T):
+    print(answer[t])
