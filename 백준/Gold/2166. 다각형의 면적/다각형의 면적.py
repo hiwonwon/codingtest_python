@@ -1,14 +1,18 @@
 n = int(input())
-polygon = []
-for _ in range(n):
-    x,y = map(int, input().split())
-    polygon.append([x,y])
+O = [0,0]
+z = [list(map(int,input().split())) for _ in range(n)]
+z.append(z[0])
 
-ans = 0
-#마지막에 n과 1번째 곱하고 빼므로 마지막에 첫번째 것 추가
-polygon.append(polygon[0])
+ccw1 = 0
+ccw2 = 0
+
+a = 0
+if n%2 == 0: a = int(n/2)+1
 
 for i in range(n):
-    ans += polygon[i][0]* polygon[i+1][1] - polygon[i+1][0]*polygon[i][1]
+    if i < a:
+        ccw1 += ((O[0]*z[i][1]) + (z[i][0]*z[i+1][1]) + (z[i][0]*O[1]))-((z[i][0]*O[1]) + (z[i+1][0]*z[i][1]) + (O[0]*z[i+1][1]))
+    else:
+        ccw2 += ((O[0]*z[i][1]) + (z[i][0]*z[i+1][1]) + (z[i][0]*O[1]))-((z[i][0]*O[1]) + (z[i+1][0]*z[i][1]) + (O[0]*z[i+1][1]))
 
-print(abs(ans)/2)
+print(abs(ccw1+ccw2)/2)
