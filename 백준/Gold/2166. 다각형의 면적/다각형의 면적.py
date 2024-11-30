@@ -1,18 +1,8 @@
-n = int(input())
-O = [0,0]
-z = [list(map(int,input().split())) for _ in range(n)]
-z.append(z[0])
-
-ccw1 = 0
-ccw2 = 0
-
-a = 0
-if n%2 == 0: a = int(n/2)+1
-
-for i in range(n):
-    if i < a:
-        ccw1 += ((O[0]*z[i][1]) + (z[i][0]*z[i+1][1]) + (z[i][0]*O[1]))-((z[i][0]*O[1]) + (z[i+1][0]*z[i][1]) + (O[0]*z[i+1][1]))
-    else:
-        ccw2 += ((O[0]*z[i][1]) + (z[i][0]*z[i+1][1]) + (z[i][0]*O[1]))-((z[i][0]*O[1]) + (z[i+1][0]*z[i][1]) + (O[0]*z[i+1][1]))
-
-print(abs(ccw1+ccw2)/2)
+n=int(input())
+c=list(map(int,input().split()))
+t=[c for i in range(2)]
+s=0
+for i in range(n-1):
+    t[0],t[1]=t[1],list(map(int,input().split()))
+    s+=((t[0][0]-c[0])*(t[1][1]-c[1])-(t[1][0]-c[0])*(t[0][1]-c[1]))/2
+print(abs(s))
