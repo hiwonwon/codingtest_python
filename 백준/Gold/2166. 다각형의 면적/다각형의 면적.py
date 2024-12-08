@@ -1,8 +1,31 @@
-n=int(input())
-c=list(map(int,input().split()))
-t=[c for i in range(2)]
-s=0
-for i in range(n-1):
-    t[0],t[1]=t[1],list(map(int,input().split()))
-    s+=((t[0][0]-c[0])*(t[1][1]-c[1])-(t[1][0]-c[0])*(t[0][1]-c[1]))/2
-print(abs(s))
+import sys
+
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    index = 0
+    
+    n = int(input[index])
+    index += 1
+    
+    points = []
+    for _ in range(n):
+        x = int(input[index])
+        y = int(input[index + 1])
+        points.append((x, y))
+        index += 2
+    
+    # 신발끈 공식 적용
+    area = 0
+    for i in range(n):
+        x1, y1 = points[i]
+        x2, y2 = points[(i + 1) % n]
+        area += (x1 * y2 - y1 * x2)
+    
+    area = abs(area) / 2.0
+    
+    # 소수점 아래 둘째 자리에서 반올림하여 첫째 자리까지 출력
+    print(f"{area:.1f}")
+
+if __name__ == "__main__":
+    main()
