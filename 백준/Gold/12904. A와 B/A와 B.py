@@ -1,15 +1,21 @@
-s = list(input())
-t =list(input())
-ans = 0
-while(t):
-    if t[-1] == 'A':
-        t.pop()
-    elif t[-1] == 'B':
-        t.pop()
-        t = t[::-1]
+from collections import deque
 
-    if str(t) == str(s):
-        ans = 1
-        break
+S = input()
+T = input()
 
-print(ans)
+queue = deque()
+queue.append((T))
+
+while queue:
+    cur = queue.popleft()
+
+    if cur == S:
+        print(1)
+        exit(0)
+
+    if len(cur) > 0 and cur[-1] == 'A':
+        queue.append(cur[0:-1])
+    elif len(cur) > 0 and cur[-1] == 'B':
+        queue.append(cur[0:-1][::-1])
+
+print(0)
