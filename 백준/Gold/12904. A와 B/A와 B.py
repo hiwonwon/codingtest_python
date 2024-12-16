@@ -1,21 +1,17 @@
-from collections import deque
 
 S = input()
 T = input()
+r = ''
+ans = 0
 
-queue = deque()
-queue.append((T))
+while T != '':
+    if T[-1] == 'A':
+        T = T[0:len(T)-1]
+    elif T[-1] == 'B':
+        T = T[0:len(T)-1]
+        T = T[::-1]
+    if T == S:
+        ans = 1
 
-while queue:
-    cur = queue.popleft()
 
-    if cur == S:
-        print(1)
-        exit(0)
-
-    if len(cur) > 0 and cur[-1] == 'A':
-        queue.append(cur[0:-1])
-    elif len(cur) > 0 and cur[-1] == 'B':
-        queue.append(cur[0:-1][::-1])
-
-print(0)
+print(ans)
