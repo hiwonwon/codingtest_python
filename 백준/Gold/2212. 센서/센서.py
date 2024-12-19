@@ -1,21 +1,4 @@
-import sys
-n = int(input())
-k = int(input())
-
-sensor = list(map(int, input().split()))
-sensor.sort()
-
-if k>= n :
-    print(0)
-    sys.exit()
-
-dist = []
-for i in range(1,n):
-    dist.append(sensor[i]-sensor[i-1])
-
-dist.sort(reverse=True)
-for _ in range(k-1):
-    dist.pop(0)
-
-
-print(sum(dist))
+N,K=int(input()),int(input())
+arr=sorted(list(map(int,input().split())))
+diff=sorted([arr[i+1]-arr[i]for i in range(N-1)],reverse=1)
+print(sum(diff[K-1:]))
