@@ -1,41 +1,70 @@
 import sys
-from collections import deque
 
-def main(N,K,A):
-    A = deque(A)
-    robots = deque([False] * N)
 
-    steps = 0
+def work():
+    global zero_dur
+
+    # 1단계
+    n_dur = dur[:]
+    n_dur = [n_dur[-1]] + n_dur[:-1]
+
+    for p in range(n - 1, 0, -1):
+        robots[p] = robots[p - 1]
+    robots[0] = 0
+    if robots[-1]:
+        robots[-1] = 0
+
+    # 2단계
+    for p in range(n - 1, 0, -1):
+        if n_dur[p] and robots[p - 1] and not robots[p]:
+            robots[p] = robots[p - 1]
+            robots[p - 1] = 0
+            n_dur[p] -= 1
+
+            if n_dur[p] == 0:
+                zero_dur += 1
+
+    if robots[-1]:
+        robots[-1] = 0
+
+    # 3단계
+    if n_dur[0]:
+        robots[0] = 1
+        n_dur[0] -= 1
+        if n_dur[0] == 0:
+            zero_dur += 1
+
+    # 4단계
+    if zero_dur >= k:
+        return True, n_dur
+    return False, n_dur
+
+
+def check():
+    cnt = 0
+    for p in range(2 * n):
+        if dur[p] == 0:
+            cnt += 1
+
+        if cnt >= k:
+            return False, cnt
+    return True, cnt
+
+
+n, k = map(int, sys.stdin.readline().split())
+dur = list(map(int, sys.stdin.readline().split()))
+robots = [0] * n
+
+task = 1
+test = check()
+if test[0]:
+    zero_dur = test[1]
     while True:
-        steps += 1
-
-        # 벨트와 로봇의 회전
-        A.rotate(1)
-        robots.rotate(1)
-
-        # N 번 컨데이너의 로봇을 내린다.
-        robots[N-1] = False
-
-        # 가장 앞에있는 로봇부터 이동
-        for i in range(N-2, -1, -1):
-            if robots[i] and not robots[i+1] and A[i+1] >= 1:
-                robots[i], robots[i+1] = False, True
-                A[i+1] -= 1
-        
-        robots[N-1] = False
-
-        if A[0] != 0:
-            robots[0] = True
-            A[0] -= 1
-        
-        if A.count(0) >= K:
+        result = work()
+        if result[0]:
             break
-    
-    return steps
 
+        dur = result[1][:]
+        task += 1
 
-N, K = map(int, sys.stdin.readline().split())
-A = list(map(int, sys.stdin.readline().split()))
-res = main(N,K,A)
-
-print(res)
+print(task)
