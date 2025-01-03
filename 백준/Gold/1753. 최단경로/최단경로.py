@@ -1,43 +1,31 @@
 import heapq
+import sys
+input = sys.stdin.readline
+INF = int(1e9)
 
+n, m = map(int, input().split())
+start = int(input())
+graph = [[] for _ in range(n+1)]
+distance = [INF] * (n+1)
+distance[start] = 0
 
-v, e = map(int, input().split())
-k = int(input())
-inf = float ("INF")
-graph = [[] for _ in range(v+1)]
-dp = [inf] * (v+1)
-heap = []
+for _ in range(m):
+    a, b, c = map(int, input().split())
+    graph[a].append((b,c))
 
-
-def Dijkstra(k):
-    dp [k] = 0
-    heapq.heappush(heap,(0,k))
-
-    while heap:
-        weight, now = heapq.heappop(heap)
-
-        if dp[now] < weight:
+def dijkstra(start):
+    q = []
+    heapq.heappush(q, (0, start))
+    while q:
+        dist, now = heapq.heappop(q)
+        if distance[now] < dist:
             continue
+        for connect in graph[now]:
+            cost = dist + connect[1]
+            if cost < distance[connect[0]]:
+                distance[connect[0]] = cost
+                heapq.heappush(q, (cost, connect[0]))
 
-        for w,nxt in graph[now]:
-            nxt_w = weight + w
-
-            if  nxt_w < dp[nxt]:
-                dp[nxt] = nxt_w
-                heapq.heappush(heap,(nxt_w,nxt))
-
-
-for _ in range(e):
-    a, b, w = map(int, input().split())
-    graph[a].append((w,b))
-
-
-
-Dijkstra(k)
-
-for i in range(1,v+1):
-
-    if dp[i] == inf:
-        print("INF")
-    else:
-        print(dp[i])
+dijkstra(start)
+for i in range(1, n+1):
+    print("INF" if distance[i]==INF else distance[i])
