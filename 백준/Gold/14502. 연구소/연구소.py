@@ -1,56 +1,52 @@
+N,M = map(int,input().split())
+arr = [list(map(int,input().split())) for _ in range(N)]
+virus = [] 
+change_wall = []
+
+for i in range(N):
+    for j in range(M):
+        if arr[i][j] == 2:
+            virus.append((i,j))
+        elif arr[i][j] == 0:
+            change_wall.append((i,j))
+    
+from itertools import combinations
 from collections import deque
-from copy import deepcopy 
-n, m = map(int, input().split())
 
-graph = [list(map(int, input().split())) for _ in range(n)]
+ans = 0
 
-def bfs():
-    tmp = deepcopy(graph)
+def bfs(si,sj,v,arr):
     q = deque()
+    q.append((si,sj))
+    v[si][sj] = True
 
-    for i in range(n):
-        for j in range(m):
-            if graph[i][j] == 2:
-                q.append((i,j))
-    
-    
-
-    dx = [-1,1,0,0]
-    dy = [0,0,1,-1]
-
-
-    while(q):
-        a,b = q.popleft()
-        for k in range(4):
-            x = a + dx[k]
-            y = b + dy[k]
-            if 0<= x <n and 0<= y <m and tmp[x][y] == 0:
-                tmp[x][y] = 2
-                q.append((x,y))
-    global answer
-    cnt = 0
-    for i in range(n):
-        cnt += tmp[i].count(0)
-
-    #안전영역 더 큰걸로 답 갱신
-    answer = max(answer,cnt)
-    return answer
-
-def makeWall(cnt):
-
-    if cnt == 3:
-        bfs()
-        return answer
-    
-    for i in range(n):
-        for j in range(m):
-            # 벽을 세울 수 있다면
-            if graph[i][j] == 0:
-                graph[i][j] = 1
-                makeWall(cnt+1)
-                graph[i][j] = 0
+    while q:
+        ci,cj = q.popleft()
+        for ni,nj in ((ci-1,cj),(ci,cj+1),(ci+1,cj),(ci,cj-1)):
+            if 0<=ni<N and 0<=nj<M and not v[ni][nj] and arr[ni][nj] == 0:
+                q.append((ni,nj))
+                v[ni][nj] = True
+                arr[ni][nj] = 2
 
 
-answer = 0
-makeWall(0)
-print(answer)
+for comb in combinations(change_wall,3):
+    narr = [x[:] for x in arr]
+    for ci,cj in comb:
+        narr[ci][cj] = 1
+
+    tmp = 0
+    # print('')
+    v = [[False] * M for _ in range(N)]
+    for ci,cj in virus:
+        bfs(ci,cj,v,narr)
+    # print('')
+    for lst in narr:
+        tmp += lst.count(0)
+    # print('')
+    if tmp > ans:
+        ans = tmp
+
+    for ci, cj in comb:
+        narr[ci][cj] = 0
+
+print(ans)
