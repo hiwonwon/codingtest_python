@@ -1,56 +1,87 @@
-#백준 14500
-#테트로미노
+import sys
 
 n, m = map(int, input().split())
-graph = [list(map(int, input().split())) for _ in range(n)] # 입력값 저장
-visited = [[False] * m for _ in range(n)] # 방문확인
 
-# 방향설정
-dx = [1, -1, 0, 0]
-dy = [0, 0, 1, -1]
+# 매트릭스 입력 - 인덱스 에러 방지를 위해 테두리를 0으로 3겹 감싸주기
+matrix = []
+matrix.append([0] * (m + 6))
+matrix.append([0] * (m + 6))
+matrix.append([0] * (m + 6))
+for _ in range(n):
+    matrix.append(
+        [0, 0, 0] + list(map(int, sys.stdin.readline().strip().split())) + [0, 0, 0]
+    )
+matrix.append([0] * (m + 6))
+matrix.append([0] * (m + 6))
+matrix.append([0] * (m + 6))
 
-maximum = 0 # 최댓값 저장 변수
 
-# ㅗ 모양을 제외한 나머지 모양 탐색
-def dfs(x, y, tmp, cnt):
-    global maximum
-    if cnt == 4: # 탐색완료 후 최댓값 비교
-        maximum = max(maximum, tmp)
-        return
-    for i in range(4): # 방향 탐색
-        nx = x + dx[i]
-        ny = y + dy[i]
-        if nx<0 or nx>=m or ny<0 or ny>=n or visited[ny][nx]:
-            continue
-        visited[ny][nx] = True # 방문처리
-        dfs(nx, ny, tmp+graph[ny][nx], cnt+1)
-        visited[ny][nx] = False # 방문처리 제거
+# dfs 테트로미노 탐색1  - ㅗ모양군 제외
+def search1(count, cur_point, last_x, last_y, prev_move):
+    global max_point
 
-# ㅗ 모양 탐색
-def fy(x, y):
-    global maximum
-    tmp = graph[y][x]
-    arr = []
-    for i in range(4): # 모든 방향 탐색
-        nx = x + dx[i]
-        ny = y + dy[i]
-        if nx<0 or nx>=m or ny<0 or ny>=n:
-            continue
-        arr.append(graph[ny][nx])
-    length = len(arr)
-    if length == 4 : # 만약 4방향 모두 nxm에 들어간다면 그중 가장 작은 값 제거 후 sum
-        arr.sort(reverse=True)
-        arr.pop()
-        maximum = max(maximum, sum(arr) + graph[y][x])
-    elif length == 3: # 3방향만 nxm에 들어가기 때문에 바로 sum
-        maximum = max(maximum, sum(arr) + graph[y][x])
-    return # length가 2 이하라면 ㅗ 모양이 아니므로 바로 return
+    if count == 4:
+        max_point = max(max_point, cur_point)
+    else:
+        if prev_move != "up":
+            search1(
+                count + 1,
+                cur_point + matrix[last_y - 1][last_x],
+                last_x,
+                last_y - 1,
+                "down",
+            )
+        if prev_move != "down":
+            search1(
+                count + 1,
+                cur_point + matrix[last_y + 1][last_x],
+                last_x,
+                last_y + 1,
+                "up",
+            )
+        if prev_move != "left":
+            search1(
+                count + 1,
+                cur_point + matrix[last_y][last_x - 1],
+                last_x - 1,
+                last_y,
+                "right",
+            )
+        if prev_move != "right":
+            search1(
+                count + 1,
+                cur_point + matrix[last_y][last_x + 1],
+                last_x + 1,
+                last_y,
+                "left",
+            )
 
-for i in range(n):
-    for j in range(m):
-        visited[i][j] = True # 현재 지점 방문처리
-        dfs(j, i, graph[i][j], 1)
-        fy(j, i)
-        visited[i][j] = False
 
-print(maximum) # 정답 출력
+# 테트로미노 탐색2 - ㅗ 모양군 (ㅗ, ㅏ, ㅜ, ㅓ)
+def search2(x, y):
+    global max_point
+
+    # 기준 블럭의 상/하/좌/우 블럭 중 가장 작은 값을 제거하여 저장
+    beside_block_points = [
+        matrix[y][x - 1],
+        matrix[y + 1][x],
+        matrix[y][x + 1],
+        matrix[y - 1][x],
+    ]
+    beside_block_points.remove(min(beside_block_points))
+
+    cur_point = matrix[y][x]
+    for block_point in beside_block_points:
+        cur_point += block_point
+    max_point = max(max_point, cur_point)
+
+
+# 탐색
+max_point = 0
+for i in range(3, n + 3):
+    for j in range(3, m + 3):
+        search1(1, matrix[i][j], j, i, "start!")
+        search2(j, i)
+
+# 결과 출력
+print(max_point)
