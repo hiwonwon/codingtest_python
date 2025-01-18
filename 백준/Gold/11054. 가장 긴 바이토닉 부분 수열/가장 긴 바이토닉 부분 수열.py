@@ -1,22 +1,21 @@
-n = int(input())
-a = list(map(int, input().split()))
+import sys
 
-dp1 = [0] * n
-dp2 = [0] * n
+input = sys.stdin.readline
 
-for i in range(n):
-    dp1[i] = 1
+N = int(input())
+seq = list(map(int,input().split()))
+rev_seq = seq[::-1]
+inc_dp=[1]*N
+dec_dp=[1]*N
+
+for i in range(N):
     for j in range(i):
-        if a[i] > a[j]:
-            dp1[i] = max(dp1[i], dp1[j]+1)
-                
-for i in range(n-1, -1, -1):
-    dp2[i] = 1
-    for j in range(n-1, i-1, -1):
-        if a[i] > a[j]:
-            dp2[i] = max(dp2[i], dp2[j]+1)
-            
-result = 0
-for i in range(n):
-    result = max(result, dp1[i]+dp2[i]-1)
-print(result)
+        if seq[i]>seq[j]:
+            inc_dp[i] = max(inc_dp[j]+1, inc_dp[i])
+        if rev_seq[i]>rev_seq[j]:
+            dec_dp[i] = max(dec_dp[j]+1, dec_dp[i])
+
+result=[0]*N
+for i in range(N):
+    result[i] = inc_dp[i]+dec_dp[N-i-1]-1
+print(max(result))
