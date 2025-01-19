@@ -1,21 +1,21 @@
 import sys
-
 input = sys.stdin.readline
-
 N = int(input())
-seq = list(map(int,input().split()))
-rev_seq = seq[::-1]
-inc_dp=[1]*N
-dec_dp=[1]*N
+seq = list(map(int, input().split()))
 
-for i in range(N):
-    for j in range(i):
-        if seq[i]>seq[j]:
-            inc_dp[i] = max(inc_dp[j]+1, inc_dp[i])
-        if rev_seq[i]>rev_seq[j]:
-            dec_dp[i] = max(dec_dp[j]+1, dec_dp[i])
+res1, res2 = [1 for _ in range(N)], [1 for _ in range(N)]
+# forward
+for i in range(1, N):
+    small_list = [res1[j] for j in range(i) if seq[j] < seq[i]]
+    res1[i] = max(small_list) + 1 if small_list else 1
+# backward
+for i in range(N-1, -1, -1):
+    small_list = [res2[j] for j in range(N-1, i, -1) if seq[j] < seq[i]]
+    res2[i] = max(small_list) + 1 if small_list else 1
 
-result=[0]*N
-for i in range(N):
-    result[i] = inc_dp[i]+dec_dp[N-i-1]-1
-print(max(result))
+sol = 0
+for a, b in zip(res1, res2):
+    sol = max(sol, a+b)
+sol -= 1
+
+print(sol)
