@@ -1,53 +1,49 @@
 from collections import deque
-import copy
+N,L,R = map(int,input().split()) #땅크기, L이상 R이하
+graph = []
+visited = [[False]*N for _ in range(N)]
+teams=[]
+dx=[0,0,-1,1] #상하좌우
+dy=[-1,1,0,0]
+#맵 입력
+for _ in range(N):
+    graph.append( list(map( int, input().split() )) )
 
-N, L, R = map(int,input().split())
-A = [list(map(int,input().split())) for _ in range(N)]
-
-def bfs(a,b):
-    
-    people_cnt = A[a][b]
-    dx = [1,-1,0,0]
-    dy = [0,0,1,-1]
-    q = deque()
-    q.append((a,b))
-    visited[a][b] = 1
-    united = [[a,b]]
-
-    while(q):
-        x,y = q.popleft()
+def bfs(graph, x, y):
+    population = graph[y][x]
+    visited[y][x] = True
+    q=deque([(x,y,graph[y][x])])
+    team=[(x,y)]
+    while q:
+        x,y,p = q.popleft()
         for i in range(4):
-            nx = x + dx[i]
-            ny = y + dy[i]
-            if 0<= nx < N and 0<= ny < N and visited[nx][ny] == 0 and L<= abs(A[x][y]-A[nx][ny]) <=R:
-                visited[nx][ny] = 1
-                people_cnt += A[nx][ny]
-                united.append([nx,ny])
-                q.append((nx,ny))
-    
-
-    avg = people_cnt // len(united)
-    for u in united:
-        A[u[0]][u[1]] = avg
-    return united
-
-
-ans = 0
-
+            nx=x+dx[i]
+            ny=y+dy[i]
+            if 0<=nx<N and 0<=ny<N and visited[ny][nx] == False:
+                if L<=abs(graph[ny][nx]-p)<=R:
+                    visited[ny][nx] = True
+                    team.append( (nx,ny) )
+                    population += graph[ny][nx]
+                    q.append( (nx,ny,graph[ny][nx]) )
+    return (population, team)
+        
+#탐색
+day = 0
+moving = True
 while True:
-    
-    visited = [[0] * N for _ in range(N)]
-    check = 0
-    
+    moving = False
     for i in range(N):
         for j in range(N):
-            if visited[i][j] == 0:
-                visited[i][j] = 1
-                country = bfs(i,j)
-                if len(country) > 1:
-                    check = 1
-    if check == 0:
-        print(ans)
+            if visited[i][j] == False:
+                population, team = bfs(graph, j, i) #튜플 반환
+                if len(team) > 1:
+                    moving=True
+                    for tx,ty in team:
+                        graph[ty][tx] = int(population/len(team))
+    visited = [[False]*N for _ in range(N)]
+    if moving == False:
         break
-    ans += 1
+    else:
+        day+=1
 
+print(day)
