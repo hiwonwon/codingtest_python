@@ -1,47 +1,55 @@
-import sys
+# 모든 나라에는 인구가 존재.
+# 나라간의 인구 차이가 L ~ R 사이라면 국경 공유 가능 -> 국경 공유해서 인구가 이동
+# 더이상 인구 이동이 없을때까지 이동해야함.
+import sys, math
 from collections import deque
-input = sys.stdin.readline
+inp = sys.stdin.readline
 
-n, l, r = map(int, input().split())
-a = [list(map(int, input().split())) for _ in range(n)]
+n, L, R = map(int, inp().strip().split())
+arr = [list(map(int, inp().strip().split())) for _ in range(n)]
+cnt = 0
+dx, dy = [0, 1, 0, -1], [1, 0, -1, 0]
+flag = False
 
-d = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-def bfs(x, y):
-    queue = deque([(x, y)])
-    union = [(x, y)]
-    total_population = a[x][y]
-    chk[x][y] = True
+def startt():
+    global arr, cnt, flag
+    while True:
+        visit = [[0] * n for _ in range(n)]
+        flag = False
+        for i in range(n):
+            for j in range(n):
+                if visit[i][j] == 1: continue
+                bfs(i, j, visit)
+        if flag == False: 
+            return
+        cnt+=1
 
-    while queue:
-        cx, cy = queue.popleft()
-        for dx, dy in d:
-            nx, ny = cx + dx, cy + dy
-            if 0 <= nx < n and 0 <= ny < n and not chk[nx][ny]:
-                if l <= abs(a[cx][cy] - a[nx][ny]) <= r:
-                    chk[nx][ny] = True
-                    queue.append((nx, ny))
-                    union.append((nx, ny))
-                    total_population += a[nx][ny]
+def bfs(x, y, visit):
+    global flag
+    q = deque()
+    q.append([x, y])
+    visit[x][y] = 1
+    allPeopleCnt = arr[x][y]
+    allXY = [[x, y]]
+    while q:
+        curs = q.popleft()
 
-    return union, total_population
+        for i in range(4):
+            nx = curs[0] + dx[i]
+            ny = curs[1] + dy[i]
+            if(nx < 0 or ny < 0 or nx >= n or ny >= n or visit[nx][ny] == 1 
+            or abs(arr[curs[0]][curs[1]] - arr[nx][ny]) > R or abs(arr[curs[0]][curs[1]] - arr[nx][ny]) < L): continue
 
-days = 0
+            flag = True
+            allXY.append([nx, ny])
+            allPeopleCnt+=arr[nx][ny]
+            q.append([nx, ny])
+            visit[nx][ny] = 1
+    
+    if len(allXY) == 1: return
+    peopleCnt = allPeopleCnt//len(allXY)
+    for i in range(len(allXY)):
+        arr[allXY[i][0]][allXY[i][1]] = peopleCnt
 
-while True:
-    chk = [[False] * n for _ in range(n)]
-    move = False
-
-    for i in range(n):
-        for j in range(n):
-            if not chk[i][j]:
-                union, total_population = bfs(i, j)
-                if len(union) > 1:
-                    move = True
-                    new_population = total_population // len(union)
-                    for x, y in union:
-                        a[x][y] = new_population
-
-    if not move:
-        print(days)
-        break
-    days += 1
+startt()
+print(cnt)
