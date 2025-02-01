@@ -1,45 +1,54 @@
-sdoku = [list(map(int,input().split())) for _ in range(9)]
+import sys
+from collections import deque
 
-def row(x,a):
-    #해당 행에 n이 이미 있으면 False
-    for i in range(9):
-        if a == sdoku[x][i]:
-            return False
-    return True
-def col(y,a):
-    #해당 열에 n이 이미 있으면 False
-    for i in range(9):
-        if a == sdoku[i][y]:
-            return False
-    return True
+matrix = [list(map(int, sys.stdin.readline().split())) for _ in range(9)]
 
-def square(x,y,a):
-    for i in range(3):
-        for j in range(3):
-            if a == sdoku[x//3*3 + i][y//3*3 + j]:
+# empty_spot : candidates list
+def get_spots(matrix):
+    empty_spots = []
+    for i in range(9):
+        for j in range(9):
+            if matrix[i][j] == 0:
+                empty_spots.append((i, j))
+    return empty_spots
+
+def test_candidate(x, y, i):
+    if i in matrix[x]:
+        return False
+    
+    for a in range(9):
+        if matrix[a][y] == i:
+            return False
+        
+    dxs = [ 2-x%3, 1-x%3, 0-x%3]
+    dys = [ 2-y%3, 1-y%3, 0-y%3]
+    for dx in dxs:
+        for dy in dys:
+            nx, ny = x + dx, y + dy
+            if matrix[nx][ny] == i:
                 return False
     return True
-
-def find(n):
-    if n == len(blank):
-        for s in sdoku:
-            print(*s)
-        exit(0)
         
-    for i in range(1,10):
-        x = blank[n][0]
-        y = blank[n][1]
 
-        if row(x,i) and col(y,i) and square(x,y,i):
-            sdoku[x][y] = i
-            find(n+1)
-            sdoku[x][y] = 0 
+# def find_candidates(x, y):
+#     for i in list(candidates[(x, y)]):
+#         if not test_candidate(x, y, i): # 값 가능하지않으면
+#             candidates[(x, y)].remove(i)
 
 
-blank = []
-for i in range(9):
-    for j in range(9):
-        if sdoku[i][j] == 0:
-            blank.append([i,j])
-find(0)
+def fill_number(count, empty_spots):
+    if count == len(empty_spots):
+        for row in matrix:
+            print(*row)
+        exit()
+    x, y = empty_spots[count]
+    for i in range(1, 10):
+        if test_candidate(x, y, i):
+            matrix[x][y] = i
+            fill_number(count+1,empty_spots)
+            matrix[x][y] = 0
+        
 
+
+empty_spots = get_spots(matrix)
+fill_number(0, empty_spots)
