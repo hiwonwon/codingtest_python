@@ -13,7 +13,7 @@ for _ in range(E):
 
 v1,v2 = map(int,input().split())
 
-def dijkstra(start):
+def dijkstra(start,end):
     distance = [inf] * (N+1)
     q = []
     heapq.heappush(q,(start,0))
@@ -31,10 +31,10 @@ def dijkstra(start):
                 distance[next_node] = d
                 heapq.heappush(q,(next_node,d))
     
-    return distance
+    return distance[end]
 
 
-ans = min(dijkstra(1)[v1]+dijkstra(v1)[v2]+dijkstra(v2)[N],dijkstra(1)[v2]+dijkstra(v2)[v1]+dijkstra(v1)[N])
+ans = min(dijkstra(1,v1)+dijkstra(v1,v2)+dijkstra(v2,N),dijkstra(1,v2)+dijkstra(v2,v1)+dijkstra(v1,N))
 
 if ans < inf:
     print(ans)
