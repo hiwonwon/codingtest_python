@@ -1,64 +1,36 @@
-
 import sys
-sys.setrecursionlimit(20000)
+input=sys.stdin.readline
 
-
-def dfs(a,group):
-        global check
-        if check:
-             return
-        visited[a] = group
-        
-        for v in graph[a]:
-            #a와 인접한 노드 v가 방문한 적 없다면
-            if visited[v] == 0:
-                #현재노드와 인접하므로 다른 그룹으로 전달
-                dfs(v,-group)
-            #인접한 노드가 같은 집합이라면 종료
-            elif visited[a] == visited[v]:
-                 check = True
-                 return
-
-import sys
-sys.setrecursionlimit(20000)
-
-
-def dfs(a,group):
-        global check
-        if check:
-             return
-        visited[a] = group
-        
-        for v in graph[a]:
-            #a와 인접한 노드 v가 방문한 적 없다면
-            if visited[v] == 0:
-                #현재노드와 인접하므로 다른 그룹으로 전달
-                dfs(v,-group)
-            #인접한 노드가 같은 집합이라면 종료
-            elif visited[a] == visited[v]:
-                 check = True
-                 return
-k = int(input())
+def bfs(s):
+    global flag
+    q=[]
+    q.append(s)
+    visited[s]=1
+    
+    while q:
+        c=q.pop(0)
+        for n in adj[c]:
+            if not visited[n]:
+                q.append(n)
+                visited[n]=visited[c]*(-1)
+            if visited[n]+visited[c] != 0:
+                flag=False
+                break
     
 
-for _ in range(k):
-    V,E = map(int,input().split())
-    graph = [ [] for _ in range(V+1)]
+for _ in range(int(input())):
+    V, E = map(int, input().split())
+    adj=[[] for _ in range(V+1)]
 
     for _ in range(E):
-        u,v = map(int,input().split())
-        graph[u].append(v)
-        graph[v].append(u)
+        a, b = map(int, input().split())
+        adj[a].append(b)
+        adj[b].append(a)
     
-    visited = [0] * (V+1)
-    check = False
-    for i in range(1,V+1):
-         if visited[i] == 0:
-              dfs(i,1)
-              if check:
-                   break
-    if check:
-         print("NO")
-    else:
-         print("YES")
-    
+    flag=True
+    visited=[0]*(V+1)
+    for i in range(1, V+1):
+        if not visited[i]:
+            bfs(i)
+            
+    print("YES" if flag else "NO")
