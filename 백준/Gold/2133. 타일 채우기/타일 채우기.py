@@ -1,15 +1,19 @@
-n = int(input())
-dp = [0] * (n+1)
+N = int(input())
 
-#못채우는 경우
-if n % 2 != 0:
-    print(0)
-else:
-    dp[2] = 3
-    for i in range(4,n+1,2):
-        dp[i] = dp[i-2] * 3 + 2
-        for j in range(2,i-2,2):
-            dp[i] += dp[j] * 2
+L = [0] * (N+1)
+L[0] = 1
+if N > 2:
+    L[2] = 3
 
-    
-    print(dp[n])
+
+R = [0] * (N+1)
+
+for i in range(2, N+1):
+    if i % 2 == 1:
+        continue
+    else:
+        if i > 2:
+            R[i] = L[i-4] * 2 + R[i-2]
+        L[i] = L[i-2] * 3 + R[i]
+
+print(L[N])
