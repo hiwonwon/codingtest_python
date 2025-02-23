@@ -1,25 +1,30 @@
 import sys
+sys.setrecursionlimit(10**6)
+A = list(input())
+B = list(input())
+dp = [[0]*(len(B)+1) for i in range(len(A)+1)]
+path = []
 
-input = sys.stdin.readline
+for i in range(1, len(A)+1):
+    for j in range(1, len(B)+1):
+        if A[i-1] == B[j-1]:
+            dp[i][j] = dp[i-1][j-1] + 1
+            continue
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-str1 = [''] + list(input().rstrip())
-str2 = [''] + list(input().rstrip())
+print(dp[len(A)][len(B)])
 
-n1 = len(str1)
-n2 = len(str2)
+def func(r, c):
+    if r == 0 or c == 0:
+        return 
+    if A[r-1] == B[c-1]:
+        path.append(A[r-1])
+        func(r-1, c-1)
+        return
+    if dp[r-1][c] > dp[r][c-1]:
+        func(r-1, c)
+        return
+    func(r, c-1)
 
-dp = [['']*n1 for _ in range(n2)]
-for i in range(1,n2):
-    for j in range(1,n1):
-        if str1[j] == str2[i]:
-            dp[i][j] = dp[i-1][j-1] + str1[j]
-        else:
-            if len(dp[i-1][j]) > len(dp[i][j-1]):
-                dp[i][j] = dp[i-1][j]
-            else:
-                dp[i][j] = dp[i][j-1]
-
-ans = len(dp[-1][-1])
-print(ans)
-if ans!= 0 :
-    print(dp[-1][-1])
+func(len(A), len(B))
+print(*reversed(path), sep='')
