@@ -20,15 +20,16 @@ def bfs(si,sj):
             nx = x + dx[i]
             ny = y + dy[i]
             if 0<= nx <r and 0<= ny <c:
-                if (graph[nx][ny] =='.' or graph[nx][ny] == "D") and graph[x][y] == 'S':
+                if (graph[nx][ny] =='.' or graph[nx][ny] == "S") and graph[x][y] == '*':
+                        graph[nx][ny] = '*'
+                        q.append((nx,ny))
+
+                elif (graph[nx][ny] =='.' or graph[nx][ny] == "D") and graph[x][y] == 'S':
                         visited[nx][ny] = visited[x][y] +1
                         graph[nx][ny] = 'S'
                         q.append((nx,ny))
 
-                elif (graph[nx][ny] =='.' or graph[nx][ny] == "S") and graph[x][y] == '*':
-                        graph[nx][ny] = '*'
-                        q.append((nx,ny))
-
+                
 
 
 q = deque()
@@ -63,3 +64,5 @@ if visited[di][dj]:
     print(visited[di][dj] - 1)
 else:
     print("KAKTUS")
+    
+            
