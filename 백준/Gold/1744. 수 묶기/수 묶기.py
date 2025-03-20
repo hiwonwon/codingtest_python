@@ -4,15 +4,16 @@ input = sys.stdin.readline
 n = int(input())
 
 plus = []
-one = []
 minus = []
 zero = False
+ans = 0
 for _ in range(n):
     tmp = int(input())
     if tmp == 0 :
         zero =True
     elif tmp == 1:
-        one.append(1)
+        #1은 바로 더해주기
+        ans += 1
     elif tmp >0 :
         plus.append(tmp)
     elif tmp < 0 :
@@ -23,14 +24,12 @@ for _ in range(n):
 plus.sort(reverse = True)
 minus.sort()
 
-ans = 0
+
 
 for i in range(len(plus)//2):
     ans += plus[i*2]*plus[i*2+1]
 if len(plus)%2 == 1:
     ans += plus[-1]
-for i in one:
-    ans += i
 
 
 for i in range(len(minus)//2):
