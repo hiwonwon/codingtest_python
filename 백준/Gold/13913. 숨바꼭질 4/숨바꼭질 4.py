@@ -1,34 +1,44 @@
-import sys
-input = sys.stdin.readline
 from collections import deque
 
-n, k = map(int,input().split())
-visit = [0] * 100_001
-move = [0] * 100_001
+MAX = 100000  # 문제 조건에 맞는 최대 범위 (0부터 MAX까지)
+# visited = [False] * (MAX + 1)
+# prev = [-1] * (MAX + 1)
+from collections import defaultdict
 
-q = deque()
-q.append(n)
-ans = 0
-cnt = 0
+visited = defaultdict(lambda: False)
+prev = defaultdict(lambda: False)
 
-while(q):
-    x = q.popleft()
-    if x == k:
-        break
-    for nx in x+1,x-1,x*2:
-        if 0<= nx <100_001:
-            if visit[nx]==0 or visit[nx] >= visit[x]+1:
-                q.append(nx)
-                visit[nx] = visit[x] + 1
-                #이전 노드를 저장하는 배열
-                move[nx] = x
+def bfs(N, K, visited):
+	queue = deque([N])
+	
+	while queue:
+		v = queue.popleft()
+		if 0 <= v * 2 <= MAX:
+			if not visited[v * 2]:
+				queue.append(v * 2)
+				visited[v * 2] = True
+				prev[v * 2] = v
+		if 0 <= v + 1 <= MAX:
+			if not visited[v + 1]:
+				queue.append(v + 1)
+				visited[v + 1] = True
+				prev[v + 1] = v
+		if 0 <= v - 1 <= MAX:
+			if not visited[v - 1]:
+				queue.append(v - 1)
+				visited[v - 1] = True
+				prev[v - 1] = v
+		if v * 2 == K or v + 1 == K or v - 1 == K:
+			break
+	path = [K]
+	current = K
+	while current != N:
+		current = prev[current]
+		path.append(current)
+	path.reverse()
+	print(len(path) - 1)
+	print(*path)
 
+N, K = map(int, input().split())
 
-print(visit[k])
-
-arr = []
-tmp = k
-for _ in range(visit[x]+1):
-    arr.append(tmp)
-    tmp = move[tmp]
-print(' '.join(map(str, arr[::-1])))
+bfs(N, K, visited)
