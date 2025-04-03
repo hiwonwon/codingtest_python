@@ -1,28 +1,35 @@
-n, b = map(int,input().split())
-matrix = [list(map(int,input().split())) for _ in range(n)]
+import sys
 
-b2 = b // 2
+input = sys.stdin.readline
 
-def multi(a,b):
-    x = [[0] * n for _ in range(n)]
+def multiplication(mat_a, mat_b):
+    n = len(mat_a)
+    rst = [[0] * n for _ in range(n)]
     for i in range(n):
         for j in range(n):
             for k in range(n):
-                x[i][j]  += a[i][k] * b[k][j] % 1000
-    return x
+                rst[i][j] += mat_a[i][k] * mat_b[k][j] % 1000    
+    return rst
 
-def square(x,n):
-    if n == 1:
-        return x
-    tmp = square(x, n//2)
-    if n %2 == 0:
-        return multi(tmp,tmp)
+def pow(matrix, n):
+    rst = matrix
+    if n == 0:
+        return rst
+    elif n == 1:
+        return rst
+    elif n % 2:
+        y = pow(matrix, (n-1)//2)
+        return multiplication(matrix, multiplication(y, y))
     else:
-        return multi(multi(tmp,tmp),x)
-ans = square(matrix,b)
+        y = pow(matrix, n//2)
+        return multiplication(y, y)
+    
+n, b = map(int, input().split())
+matrix = []
+for _ in range(n):
+    matrix.append(list(map(int, input().split())))
 
-for i in range(n):
-        for j in range(n):
-            ans[i][j] = ans[i][j] % 1000
-for a in ans:
-    print(*a)
+for i in pow(matrix, b):
+    for j in i:
+        print(j%1000, end = ' ')
+    print()
