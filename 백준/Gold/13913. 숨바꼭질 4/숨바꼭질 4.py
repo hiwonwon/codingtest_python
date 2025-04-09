@@ -1,36 +1,42 @@
+import sys
 from collections import deque
-def bfs():
-    q=deque()
-    q.append(N)
-    visited=[100001]*100001
-    previous=[-1]*100001
-    visited[N]=0
-    while q:
-        t=q.popleft()
-        if t==K:
-            res=visited[t]
-            route=[]
-            while t!=-1:
-                route.append(t)
-                t=previous[t]
-            return res, route[::-1]
-        w=t+1
-        if 0<=w<=100000 and visited[w]>visited[t]+1:
-            q.append(w)
-            visited[w]=visited[t]+1
-            previous[w]=t
-        w=t-1
-        if 0<=w<=100000 and visited[w]>visited[t]+1:
-            q.append(w)
-            visited[w]=visited[t]+1
-            previous[w]=t
-        w=2*t
-        if 0<=w<=100000 and visited[w]>visited[t]+1:
-            q.append(w)
-            visited[w]=visited[t]+1
-            previous[w]=t
 
-N,K=map(int,input().split())
-min_len,path=bfs()
-print(min_len)
-print(*path)
+n, k = map(int, sys.stdin.readline().strip().split())
+
+MAX = 100001
+
+def bfs(start, end):
+    visited = [-1] * MAX
+    prev = [-1] * MAX  # 경로 추적용
+
+    queue = deque()
+    queue.append(start)
+    visited[start] = 0
+
+    while queue:
+        current = queue.popleft()
+
+        if current == end:
+            break
+
+        for next_pos in (current - 1, current + 1, current * 2):
+            if 0 <= next_pos < MAX and visited[next_pos] == -1:
+                visited[next_pos] = visited[current] + 1
+                prev[next_pos] = current
+                queue.append(next_pos)
+
+    # 시간 출력
+    print(visited[end])
+
+    # 경로 추적
+    path = []
+    temp = end
+    while temp != -1:
+        path.append(temp)
+        temp = prev[temp]
+    path.reverse()
+
+    print(" ".join(map(str, path)))
+
+# 예시 실행
+bfs(n, k)
