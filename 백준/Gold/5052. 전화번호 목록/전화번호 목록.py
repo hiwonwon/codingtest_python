@@ -2,8 +2,6 @@ t = int(input())
 for _ in range(t):
     n = int(input())
     nums = []
-    lmin = 11
-    lmax = 0
     ans = "YES"
     for i in range(n):
         num = input()
