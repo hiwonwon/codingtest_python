@@ -1,43 +1,46 @@
-import sys
-input = sys.stdin.readline
-sdoku = [list(map(int,input().rstrip())) for _ in range(9)]
+def backtrack(board, idx):
+    if idx == len(blank_cell):
+        return board
 
-def row_check(r,n):
-    for col in range(9):
-        if sdoku[r][col] == n:
-            return False
-    return True
-def col_check(c,n):
-    for row in range(9):
-        if sdoku[row][c] == n:
-            return False
-    return True
-def square_check(i,j,n):
-    for k in range(3*((i//3)),3*((i//3))+3):
-        for x in range(3*((j//3)), 3*((j//3))+3):
-            if sdoku[k][x] == n:
-                return False
-    return True
+    r, c = blank_cell[idx]
+    b = (r // 3) * 3 + (c // 3)
+
+    filterd_number = [i for i in range(1, 10) if row[r][i] and col[c][i] and box[b][i]]
+
+    for i in filterd_number:
+        board[r][c] = i
+        row[r][i], col[c][i], box[b][i] = False, False, False
+
+        completed_board = backtrack(board, idx + 1)
+        if completed_board:
+            return completed_board
+
+        row[r][i], col[c][i], box[b][i] = True, True, True
+        board[r][c] = 0
 
 
-def backtracking(idx):
-    if idx == len(zero):
-        for i in range(9):
-            for j in range(9):
-                print(sdoku[i][j], end="")
-            print()
-        exit()
-    x,y = zero[idx]
-    for n in range(1,10):
-        if row_check(x,n) and col_check(y,n) and square_check(x,y,n):
-            sdoku[x][y] = n
-            backtracking(idx+1)
-            sdoku[x][y] = 0
+row = [[True] * 10 for _ in range(9)]
+col = [[True] * 10 for _ in range(9)]
+box = [[True] * 10 for _ in range(9)]
 
-zero = []
-for i in range(9):
-    for j in range(9):
-        if sdoku[i][j] == 0:
-             zero.append((i,j))
-backtracking(0)
-             
+N = 9
+grid = [list(map(int, list(input()))) for _ in range(N)]
+
+blank_cell = []
+visited = set()
+
+for r in range(N):
+    for c in range(N):
+        if grid[r][c] == 0:
+            blank_cell.append((r, c))
+        else:
+            n = grid[r][c]
+            b = (r // 3) * 3 + (c // 3)
+            row[r][n] = False
+            col[c][n] = False
+            box[b][n] = False
+
+result = backtrack(grid, 0)
+
+for row in result:
+    print("".join(map(str, row)))
