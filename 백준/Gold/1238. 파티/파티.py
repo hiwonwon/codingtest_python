@@ -1,11 +1,3 @@
-#n개의 마을에 각 1명씩 n명의 학생
-#x번 마을에 모여서 파티 , 마을사이에 m개의 단방향 도로 i번째 길 지날때 Ti시간 소비
-#각각학생 최단시간에 오고가기
-#가장 많은 시간 소비하는 학생 누구?
-#같은도로 안주어지며 모두 x도시왕복가능한 경우만 주어짐
-
-#알고리즘 - 다익스트라?
-#각 학생의 x번도시 최단거리로 왕복하는 시간 알아야함
 import heapq
 n, m, x = map(int,input().split())
 graph = [[] for _ in range(n+1)]
@@ -31,13 +23,17 @@ def dijkstra(start):
     return dp
 #i 번 도시 -> x번도시
 come = dijkstra(x)
+
+#x번 도시 -> i번도시 구하기
 back = [0]*(n+1)
-#x번 도시 -> i번도시
 for i in range(1,n+1):
-    tmp = dijkstra(i)
-    back[i] = tmp[x]
+    if i!= x:
+        tmp = dijkstra(i)
+        back[i] = tmp[x]
 ans = 0
 for i in range(1,n+1):
+    
+    #i번 도시 -> x번 도시 최단거리 + x번 도시 -> i번 도시 최단거리의 최대값
     ans = max(ans,come[i]+back[i])
 
 
