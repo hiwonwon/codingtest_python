@@ -1,70 +1,40 @@
-import sys
+#컨베이어 = n / 벨트 = 2n
+# 1~2n-1 -> now + 1 / 2n -> 1 
+#1 : 올리는 위치 / n : 내리는 위치
+# 로봇 올리는 위치에만 올리고 내리는 위치에서 바로 내림
+# 올리는 위치 올릴때, 이동시 내구도 -1
+# 이동할 때는 이동할 칸 로봇x + 그 칸 내구도 >= 1
+#내구도가 0인 칸 개수 >= k 종료
 
+#정답: 몇번째 단계일 때 종료 됐는가?
+from collections import deque
 
-def work():
-    global zero_dur
+n, k = map(int, input().split())
+a = deque(map(int, input().split()))
 
-    # 1단계
-    n_dur = dur[:]
-    n_dur = [n_dur[-1]] + n_dur[:-1]
+checkRobotsOnA = deque([0]*n)
 
-    for p in range(n - 1, 0, -1):
-        robots[p] = robots[p - 1]
-    robots[0] = 0
-    if robots[-1]:
-        robots[-1] = 0
+ans = 0
+while True:
+    ans += 1
+    a.rotate(1)
+    #내리는 위치 내리기
+    checkRobotsOnA[-1] = 0
+    checkRobotsOnA.rotate(1)
+    checkRobotsOnA[-1] = 0
+    #젤 먼저 올라간 애 붜
+    for i in range(n-2,-1,-1):
+        if checkRobotsOnA[i+1] == 0 and checkRobotsOnA[i] == 1 and a[i+1] > 0:
+            checkRobotsOnA[i+1] = 1
+            checkRobotsOnA[i] = 0
+            a[i+1] -= 1
+    checkRobotsOnA[-1] = 0
 
-    # 2단계
-    for p in range(n - 1, 0, -1):
-        if n_dur[p] and robots[p - 1] and not robots[p]:
-            robots[p] = robots[p - 1]
-            robots[p - 1] = 0
-            n_dur[p] -= 1
+    if a[0] != 0 and checkRobotsOnA[0] != 1:
+        checkRobotsOnA[0] = 1
+        a[0] -= 1
+    if a.count(0) >= k:
+        break
 
-            if n_dur[p] == 0:
-                zero_dur += 1
+print(ans)
 
-    if robots[-1]:
-        robots[-1] = 0
-
-    # 3단계
-    if n_dur[0]:
-        robots[0] = 1
-        n_dur[0] -= 1
-        if n_dur[0] == 0:
-            zero_dur += 1
-
-    # 4단계
-    if zero_dur >= k:
-        return True, n_dur
-    return False, n_dur
-
-
-def check():
-    cnt = 0
-    for p in range(2 * n):
-        if dur[p] == 0:
-            cnt += 1
-
-        if cnt >= k:
-            return False, cnt
-    return True, cnt
-
-
-n, k = map(int, sys.stdin.readline().split())
-dur = list(map(int, sys.stdin.readline().split()))
-robots = [0] * n
-
-task = 1
-test = check()
-if test[0]:
-    zero_dur = test[1]
-    while True:
-        result = work()
-        if result[0]:
-            break
-
-        dur = result[1][:]
-        task += 1
-
-print(task)
